@@ -25,7 +25,11 @@
       </van-collapse-item>
     </van-collapse>
   </van-cell-group>
+  <view class="fixed compare-btn">
+    <van-button color="#7232dd" class="padding-btn" block round
+                bind:tap="goCompare" type="danger">成绩对比</van-button>
+  </view>
   <view wx:if="{{records && !gradeColumn.length}}">
-    <van-empty description="描述文字" />
+    <van-empty description="暂无成绩记录" />
   </view>
 </view>

@@ -11,3 +11,12 @@ page {
 	color: hotpink;
 	font-size: 40rpx;
 }
+.fixed{
+	position: fixed;
+}
+.compare-btn{
+	bottom: 60rpx;
+	left: 30%;
+	right: 30%;
+	margin: auto;
+}

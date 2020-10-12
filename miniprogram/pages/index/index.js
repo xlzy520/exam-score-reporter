@@ -55,6 +55,9 @@ Page({
       activeNames: event.detail,
     })
   },
+  goCompare() {
+    wx.navigateTo({ url: '/pages/compare/index' })
+  },
   getWxSetting() {
     wx.getSetting({
       success: res => {
@@ -154,7 +157,7 @@ Page({
 
   getRecordList(grade) {
     if (grade === '全部') {
-      grade = ''
+      grade = undefined
     }
     wx.showLoading({ title: '加载中...' })
     api.wxCloudCallFunction('findAll', {
@@ -181,8 +184,12 @@ Page({
 
       console.log(data)
     }).finally(() => {
+      wx.stopPullDownRefresh()
       wx.hideLoading()
     })
   },
 
+  onPullDownRefresh() {
+    this.getRecordList(this.data.grade)
+  },
 })
