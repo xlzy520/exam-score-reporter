@@ -1,0 +1,13 @@
+/**index.wxss**/
+
+page {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+	background: #f6f6f6;
+}
+
+.subject-score .van-grid-item__text{
+	color: hotpink;
+	font-size: 40rpx;
+}

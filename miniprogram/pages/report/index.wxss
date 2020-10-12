@@ -1,0 +1,13 @@
+/**index.wxss**/
+
+.total-score{
+}
+
+.total-score .van-cell-group{
+	padding-top: 30rpx;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	background: #fff;
+}

@@ -1,0 +1,11 @@
+.df{
+	display: flex;
+}
+.flex-center{
+	align-items: center;
+}
+
+.padding-btn{
+	display: block;
+	padding: 15rpx 30rpx;
+}
