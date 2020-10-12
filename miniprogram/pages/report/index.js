@@ -212,9 +212,11 @@ Page({
   },
   onLoad(e) {
     const id = e.id
-    this.getSubject()
     if (id) {
       this.getScores(id)
     }
+  },
+  onShow() {
+    this.getSubject()
   },
 })
