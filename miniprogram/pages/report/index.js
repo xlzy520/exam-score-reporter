@@ -119,7 +119,9 @@ Page({
       loading: true,
       loadingText: actionName,
     }, () => {
-      const { examDateText, rankClass, rankGrade, grade, subjects, average, score } = this.data
+      const {
+        examDateText, rankClass, rankGrade, grade, subjects, average, score,
+      } = this.data
       api.wxCloudCallFunction(name, {
         collectionName: 'scores',
         grade,
@@ -129,7 +131,7 @@ Page({
         rankClass,
         rankGrade,
         average,
-        score
+        score,
       }).then(res => {
         Toast(actionName + '成功')
         this.setData({

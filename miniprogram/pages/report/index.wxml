@@ -31,14 +31,12 @@
         model:value="{{ rankClass }}"
         label="班级排名"
         type="number"
-        auto-focus
         placeholder="请输入班级排名"
     />
     <van-field
         model:value="{{ rankGrade }}"
         label="年级排名"
         type="number"
-        auto-focus
         placeholder="请输入年级排名"
     />
 
