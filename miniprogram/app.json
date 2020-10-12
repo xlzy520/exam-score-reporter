@@ -2,7 +2,9 @@
   "pages": [
     "pages/index/index",
     "pages/report/index",
-    "pages/addGrade/index"
+    "pages/addGrade/index",
+    "pages/chart/index",
+    "pages/compare/index"
   ],
   "window": {
     "backgroundColor": "#F6F6F6",
@@ -28,6 +30,12 @@
         "text": "成绩登记",
         "iconPath": "images/report.png",
         "selectedIconPath": "images/report-active.png"
+      },
+      {
+        "pagePath": "pages/chart/index",
+        "text": "可视化",
+        "iconPath": "images/chart.png",
+        "selectedIconPath": "images/chart-active.png"
       },
       {
         "pagePath": "pages/addGrade/index",

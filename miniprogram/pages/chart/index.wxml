@@ -1,0 +1,10 @@
+<view class="container">
+  <van-empty image="../../../../images/zaizuole.jpg" description="在做了，在做了" />
+  <view>
+    可以通过可视化图表展示某一科目的多次考试成绩的曲线，也可以展示多次考试整体成绩的曲线。
+  </view>
+  <view class="title">例图</view>
+  <image src="../../images/example-chart.png"></image>
+  <view class="title">联系作者</view>
+  <image src="../../images/qrcode.png"></image>
+</view>
