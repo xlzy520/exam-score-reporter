@@ -12,7 +12,7 @@
           auto-focus
           placeholder="请输入科目名称"
       />
-      <van-button class="padding-btn" block size="small" round bind:tap="addNewSubject" type="primary">
+      <van-button class="padding-btn" block round bind:tap="addNewSubject" type="primary">
         提交
       </van-button>
 
@@ -37,7 +37,7 @@
     </van-field>
   </van-cell-group>
 
-  <van-button class="padding-btn" block size="small" round
+  <van-button class="padding-btn" block round
               bind:tap="showNewSubjectPopup"
               color="linear-gradient(to right, #4bb0ff, #6149f6)">
     <view class="df flex-center">
@@ -45,7 +45,7 @@
       增加科目信息
     </view>
   </van-button>
-  <van-button class="padding-btn" block size="small" round
+  <van-button class="padding-btn" block round
               bind:tap="submit"
               loading="{{loading}}"
               loading-type="spinner"

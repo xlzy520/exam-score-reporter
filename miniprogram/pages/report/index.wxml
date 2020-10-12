@@ -72,7 +72,7 @@
 <!--      <van-cell title="不及格科目" value="{{average}}" />-->
   </van-cell-group>
 
-  <van-button class="padding-btn" block size="small" round
+  <van-button class="padding-btn" block round
               bind:tap="submit"
               loading="{{loading}}"
               loading-type="spinner"
