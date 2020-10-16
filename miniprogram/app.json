@@ -1,8 +1,9 @@
 {
   "pages": [
+    "pages/my/index",
     "pages/index/index",
     "pages/report/index",
-    "pages/addGrade/index",
+    "pages/subjectSetting/index",
     "pages/chart/index",
     "pages/compare/index"
   ],
@@ -38,10 +39,10 @@
         "selectedIconPath": "images/chart-active.png"
       },
       {
-        "pagePath": "pages/addGrade/index",
-        "text": "课程配置",
-        "iconPath": "images/setting.png",
-        "selectedIconPath": "images/setting-active.png"
+        "pagePath": "pages/my/index",
+        "text": "我的",
+        "iconPath": "images/my.png",
+        "selectedIconPath": "images/my-active.png"
       }
     ]
   },

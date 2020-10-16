@@ -1,0 +1,13 @@
+<view class="container">
+  <view class="userinfo">
+    <open-data type="userAvatarUrl" class="userinfo-avatar"></open-data>
+  </view>
+  <van-cell is-link title="我当前的年级" icon="location-o" value="{{grade}}" bind:tap="showPopup"/>
+  <van-cell is-link title="课程配置" icon="setting-o" link-type="navigateTo" url="/pages/subjectSetting/index"/>
+
+
+  <van-popup show="{{ show }}" position="bottom" bind:close="onClose">
+  <van-picker columns="{{ columns }}" default-index="2" show-toolbar bind:cancel="onClose"
+              bind:confirm="onConfirm" />
+  </van-popup>
+</view>

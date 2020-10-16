@@ -1,0 +1,32 @@
+.container{
+  min-height: 100vh;
+  overflow: hidden;
+  background-image: url(https://cdn.it120.cc/apifactory/2019/03/07/1c731c0a355da6c7f0e163fa1917d4d3.png);
+  background-position: 0 -128rpx;
+  background-size: 750rpx auto,1500rpx, auto;
+  background-repeat: no-repeat;
+  background-color: #f8f8f8;
+  color: #000;
+}
+
+.userinfo {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+  width: 750rpx;
+  margin-top: 120rpx;
+}
+.userinfo-avatar {
+	width: 154rpx;
+	height: 154rpx;
+  border-radius: 50%;
+  border: 2px solid #fff;
+  background-color: #b90105;
+  overflow:hidden;
+  display: block;
+}
+.userinfo-nickname {
+  font-family: PingFang SC Medium, sans-serif;
+  margin: 20rpx 0;
+  font-size: 36rpx;
+}
