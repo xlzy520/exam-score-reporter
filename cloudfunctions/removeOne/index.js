@@ -9,12 +9,9 @@ const db = cloud.database()
 // 云函数入口函数
 exports.main = async (event, context) => {
   const { OPENID } = cloud.getWXContext()
-  const { collectionName, userInfo, ...params } = event
+  const { collectionName, _id } = event
   try {
-    return await db.collection('' + collectionName + '').where({
-      open_id: OPENID,
-      ...params,
-    }).get()
+    return await db.collection('' + collectionName + '').doc(_id).remove()
   } catch (e) {
     console.error(e)
   }

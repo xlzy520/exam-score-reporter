@@ -11,3 +11,19 @@
 	align-items: center;
 	background: #fff;
 }
+
+.no-subject{
+	font-size: 30rpx;
+	color: #ccc;
+	justify-content: center;
+	align-items: center;
+	padding: 10rpx;
+	background: #fff;
+}
+
+.no-subject-text{
+
+}
+.no-subject-btn{
+	color: #1296db;
+}

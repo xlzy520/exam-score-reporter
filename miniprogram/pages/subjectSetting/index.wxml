@@ -1,11 +1,12 @@
 <view class="container">
-  <van-cell title="年级" is-link value="{{grade}}" arrow-direction="down" bind:click="showPopup" />
+  <gradePicker title="年级" grade="{{grade}}" term="{{term}}" bind:change="changeGrade" />
+<!--  <van-cell title="年级" is-link value="{{grade}}" arrow-direction="down" bind:click="showPopup" />-->
   <van-popup show="{{ show }}" position="bottom" bind:close="onClose">
-    <van-picker columns="{{ columns }}" default-index="2" show-toolbar
-                wx:if="{{popupType==='picker'}}"
-                bind:cancel="onClose"
-                bind:confirm="onConfirm" />
-    <view wx:if="{{popupType === 'subject'}}">
+<!--    <van-picker columns="{{ columns }}" default-index="2" show-toolbar-->
+<!--                wx:if="{{popupType==='picker'}}"-->
+<!--                bind:cancel="onClose"-->
+<!--                bind:confirm="onConfirm" />-->
+    <view>
       <van-field
           model:value="{{ subjectName }}"
           label="科目名称"

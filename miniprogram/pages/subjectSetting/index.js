@@ -3,12 +3,14 @@ import Toast from '../../miniprogram_npm/@vant/weapp/toast/toast'
 import { defaultSubjects, gradeColumn } from '../../utils/enum'
 
 const api = require('../../utils/api.js')
+const app =getApp()
 
 Page({
   data: {
     show: false,
     columns: gradeColumn,
     grade: '初三',
+    term: '上学期',
     popupType: 'subject',
     subjects: defaultSubjects,
     subjectErrors: [],
@@ -19,17 +21,16 @@ Page({
   },
 
   showPopup() {
-    this.setData({ show: true, popupType: 'picker' })
+    this.setData({ show: true})
   },
-
   onClose() {
     this.setData({ show: false })
   },
-  onConfirm(event) {
-    const { picker, value, index } = event.detail
+  changeGrade(evt) {
+    const [grade, term] = evt.detail
     this.setData({
-      grade: value,
-      show: false,
+      grade,
+      term,
     }, () => {
       this.getSubject()
     })
@@ -87,6 +88,7 @@ Page({
         collectionName: 'gradeSubject',
         grade: this.data.grade,
         subjects: this.data.subjects,
+        term: this.data.term,
       }).then(res => {
         Toast(actionName + '成功')
         this.setData({
@@ -100,6 +102,16 @@ Page({
       })
     })
   },
+  setGradeTerm(){
+    const userInfo = app.globalData.userInfo
+    if (userInfo && userInfo.grade) {
+      this.setData({
+        grade: userInfo.grade,
+        term: userInfo.term,
+      })
+      
+    }
+  },
   getSubject() {
     wx.showLoading({
       title: '加载中',
@@ -107,6 +119,7 @@ Page({
     api.wxCloudCallFunction('findAll', {
       collectionName: 'gradeSubject',
       grade: this.data.grade,
+      term: this.data.term,
     }).then(({ data }) => {
       if (data && data.length) {
         this.setData({
@@ -126,5 +139,6 @@ Page({
   },
   onLoad() {
     this.getSubject()
+    this.setGradeTerm()
   },
 })

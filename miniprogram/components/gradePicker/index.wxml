@@ -1,0 +1,11 @@
+<van-cell title="{{title}}" is-link icon="{{icon}}"
+          value="{{currentGrade}}"
+          arrow-direction="down"
+          bind:click="showPopup" />
+
+<van-popup show="{{ show }}" position="bottom" bind:close="onClose">
+  <van-picker columns="{{ columns }}" show-toolbar
+              bind:cancel="onClose"
+              bind:confirm="onConfirm" />
+  />
+</van-popup>

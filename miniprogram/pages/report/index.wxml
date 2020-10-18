@@ -1,10 +1,12 @@
 <view class="container">
-  <van-cell title="年级" is-link value="{{grade}}" arrow-direction="down" bind:click="showPopup" />
+  <gradePicker title="年级" grade="{{grade}}" term="{{term}}" bind:change="changeGrade" />
+
+  <!--  <van-cell title="年级" is-link value="{{currentGrade}}" arrow-direction="down" bind:click="showPopup" />-->
   <van-popup show="{{ show }}" position="bottom" bind:close="onClose">
-    <van-picker columns="{{ columns }}" default-index="2" show-toolbar
-                wx:if="{{popupType==='picker'}}"
-                bind:cancel="onClose"
-                bind:confirm="onConfirm" />
+<!--    <van-picker columns="{{ columns }}" show-toolbar-->
+<!--                wx:if="{{popupType==='picker'}}"-->
+<!--                bind:cancel="onClose"-->
+<!--                bind:confirm="onConfirm" />-->
     <van-datetime-picker
         type="date"
         wx:if="{{popupType==='date'}}"
@@ -23,7 +25,9 @@
         placeholder="请输入考试名称"
     />
 
-    <van-cell title="考试日期" is-link value="{{examDateText}}" arrow-direction="down" bind:click="showDatePopup" />
+    <van-cell title="考试日期" is-link value="{{examDateText}}"
+              arrow-direction="down"
+              bind:click="showDatePopup" />
   </van-cell-group>
 
   <van-cell-group title="排名信息">
@@ -58,6 +62,10 @@
     >
       <view slot="right-icon">({{item.full}}分)</view>
     </van-field>
+    <view class="df no-subject">
+      <view class="no-subject-text">没有我的课程？</view>
+      <view class="no-subject-btn" bindtap="goConfig">去配置</view>
+    </view>
   </van-cell-group>
   <van-cell-group title="总分 ({{total}})" class="total-score">
     <van-circle value="{{ rate }}"
@@ -74,12 +82,15 @@
 
   <van-button class="padding-btn" block round
               bind:tap="submit"
+              bindgetuserinfo="getUserInfo"
+              open-type="getUserInfo"
               loading="{{loading}}"
               loading-type="spinner"
               loading-text="{{loadingText}}中"
               type="danger">
     {{subjectId ? '更新': '保存'}}
   </van-button>
+  <van-button class="padding-btn" block round bind:tap="reset" type="info">重置</van-button>
 
   <van-toast id="van-toast" />
 

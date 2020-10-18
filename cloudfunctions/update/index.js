@@ -8,12 +8,12 @@ const db = cloud.database()
 const _ = db.command
 exports.main = async (event, context) => {
   const { OPENID } = cloud.getWXContext()
-  const { collectionName, userInfo, ...params } = event
+  const { collectionName, userInfo, _id, ...params } = event
 
   try {
     return await db.collection('' + collectionName + '').where({
       open_id: OPENID,
-      _id: event._id,
+      _id,
     }).update({
       data: params,
     })

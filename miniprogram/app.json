@@ -1,9 +1,9 @@
 {
   "pages": [
-    "pages/my/index",
     "pages/index/index",
-    "pages/report/index",
     "pages/subjectSetting/index",
+    "pages/my/index",
+    "pages/report/index",
     "pages/chart/index",
     "pages/compare/index"
   ],
@@ -65,7 +65,8 @@
     "van-collapse-item": "@vant/weapp/collapse-item/index",
     "van-grid": "@vant/weapp/grid/index",
     "van-grid-item": "@vant/weapp/grid-item/index",
-    "van-empty": "@vant/weapp/empty/index"
+    "van-empty": "@vant/weapp/empty/index",
+    "van-dialog": "@vant/weapp/dialog/index"
   },
   "sitemapLocation": "sitemap.json"
 }

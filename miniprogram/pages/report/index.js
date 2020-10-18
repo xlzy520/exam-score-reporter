@@ -4,29 +4,48 @@ import { defaultSubjects, gradeColumn } from '../../utils/enum'
 
 const api = require('../../utils/api.js')
 
+const app = getApp()
+const defaultReportData = {
+  grade: '初三',
+  term: '上学期',
+  subjects: defaultSubjects,
+  total: 0,
+  score: 0,
+  rate: 0,
+  average: 0,
+  examName: '',
+  examDate: new Date().getTime(),
+  examDateText: dayjs().format('YYYY-MM-DD'),
+  rankClass: 0,
+  rankGrade: 0,
+}
+
 Page({
   data: {
     show: false,
     columns: gradeColumn,
     grade: '初三',
-    popupType: 'subject',
+    term: '上学期',
     subjects: defaultSubjects,
-    subjectErrors: [],
-    subjectName: '',
-    subjectId: '',
-    loading: false,
-    loadingText: '',
     total: 0,
     score: 0,
     rate: 0,
     average: 0,
+    examName: '',
+    examDate: new Date().getTime(),
+    examDateText: dayjs().format('YYYY-MM-DD'),
+    rankClass: 0,
+    rankGrade: 0,
+
+    popupType: 'subject',
+    subjectErrors: [],
+    subjectId: '',
+    loading: false,
+    loadingText: '',
     gradientColor: {
       '0%': '#3fecff',
       '100%': '#6149f6',
     },
-    examName: '',
-    examDate: new Date().getTime(),
-    examDateText: dayjs().format('YYYY-MM-DD'),
     formatter(type, value) {
       if (type === 'year') {
         return `${value}年`
@@ -35,13 +54,8 @@ Page({
       }
       return value
     },
-    rankClass: 0,
-    rankGrade: 0,
   },
 
-  showPopup() {
-    this.setData({ show: true, popupType: 'picker' })
-  },
   showDatePopup() {
     this.setData({ show: true, popupType: 'date' })
   },
@@ -49,24 +63,21 @@ Page({
   onClose() {
     this.setData({ show: false })
   },
-  onConfirm(event) {
-    const { picker, value, index } = event.detail
+  changeGrade(evt) {
+    const [grade, term] = evt.detail
     this.setData({
-      grade: value,
-      show: false,
+      grade,
+      term,
     }, () => {
       this.getSubject()
     })
   },
   onConfirmDate(event) {
-    console.log(event)
     const value = event.detail
     this.setData({
       examDate: value,
       examDateText: dayjs(value).format('YYYY-MM-DD'),
       show: false,
-    }, () => {
-      this.getSubject()
     })
   },
   onInputDate(event) {
@@ -87,10 +98,11 @@ Page({
     this.setData({ subjects: _subjects, subjectErrors: [] })
     this.computeTotalScores(_subjects)
   },
-  submit() {
-    const subjects = [...this.data.subjects]
+  submit(e) {
+    console.log(e)
     let hasEmpty = false
-    const { examDate, examName } = this.data
+    const { examDate, examName, subjectId } = this.data
+    const subjects = [...this.data.subjects]
     if (!examName) {
       hasEmpty = true
       Toast('请输入考试名称')
@@ -113,30 +125,36 @@ Page({
       Toast('存在不合法的输入')
       return
     }
-    const name = this.data.subjectId ? 'update' : 'add'
-    const actionName = this.data.subjectId ? '更新' : '保存'
+    console.log(subjectId)
+    const name = subjectId ? 'update' : 'add'
+    const actionName = subjectId ? '更新' : '保存'
     this.setData({
       loading: true,
       loadingText: actionName,
     }, () => {
       const {
-        examDateText, rankClass, rankGrade, grade, subjects, average, score,
+        examDateText, rankClass, rankGrade, grade, subjects, average, score, term,
       } = this.data
-      api.wxCloudCallFunction(name, {
-        collectionName: 'scores',
+      const payload = {
         grade,
         subjects,
-        name: examName,
-        date: examDateText,
+        examName,
+        examDate,
+        examDateText,
         rankClass,
         rankGrade,
         average,
         score,
+        term,
+      }
+      if (subjectId) {
+        payload._id = subjectId
+      }
+      api.wxCloudCallFunction(name, {
+        collectionName: 'scores',
+        ...payload,
       }).then(res => {
         Toast(actionName + '成功')
-        this.setData({
-          subjectId: res._id,
-        })
         console.log(res)
       }).finally(() => {
         this.setData({
@@ -194,29 +212,79 @@ Page({
     wx.showLoading({
       title: '加载中',
     })
-    api.wxCloudCallFunction('findAll', {
+    api.wxCloudCallFunction('findOne', {
       collectionName: 'scores',
       _id: id,
     }).then(({ data }) => {
-      if (data && data.length) {
-        const subjects = data[0].subjects
+      app.globalData.recordId = ''
+      if (data) {
+        const subjects = data.subjects
         this.setData({
-          subjects,
           subjectId: id,
+          ...data,
         })
         this.computeTotalFull(subjects)
+        this.computeTotalScores(subjects)
       }
     }).finally(() => {
       wx.hideLoading()
     })
   },
-  onLoad(e) {
-    const id = e.id
-    if (id) {
-      this.getScores(id)
+  getWxSetting() {
+  },
+  goConfig(){
+    wx.navigateTo({ url: '/pages/subjectSetting/index' })
+  },
+
+  getUserInfo(e) {
+    if (!app.globalData.userInfo) {
+      const detail = e.detail
+      api.wxCloudCallFunction('addUser', {
+        collectionName: 'users',
+        ...detail,
+      }).then(res => {
+        app.globalData.userInfo = detail.userInfo
+        console.log(res);
+      })
     }
   },
-  onShow() {
-    this.getSubject()
+  reset() {
+    this.setData({
+      ...defaultReportData,
+      subjectId: '',
+      subjectErrors: [],
+    }, () => {
+      this.setGradeTerm()
+      this.getSubject()
+    })
+  },
+  setGradeTerm(){
+    const userInfo = app.globalData.userInfo
+    if (userInfo && userInfo.grade) {
+      this.setData({
+        grade: userInfo.grade,
+        term: userInfo.term,
+      })
+      
+    }
+  },
+  onLoad(e) {
+    // const id = e.id || app.globalData.recordId
+    // if (id) {
+    //   this.getScores(id)
+    // }
+  },
+  onShow(e) {
+    const id = (e && e.id) || app.globalData.recordId || this.data.subjectId
+    this.setGradeTerm()
+    console.log(id)
+    if (id) {
+      this.getScores(id)
+    } else {
+      this.getSubject()
+    }
+  },
+  onHide() {
+    // this.reset()
   },
 })

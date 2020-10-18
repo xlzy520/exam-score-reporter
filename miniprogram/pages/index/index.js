@@ -28,12 +28,27 @@ Page({
     this.setData({
       gradeIndex,
     })
+    // wx.cloud.callFunction({
+    //   name: 'login',
+    //   data: {},
+    //   success: res => {
+    //     const version = wx.getSystemInfoSync().SDKVersion
+    //     console.log(version)
+    //     console.log('[云函数] [login] user openid: ', res.result)
+    //   },
+    // })
 
-    this.getWxSetting()
+    // this.getWxSetting()
+    if (!app.globalData.openid) {
+      this.onGetOpenid()
+    }
   },
   onShow() {
     this.getRecordList()
   },
+  // getUserInfo(){
+  //
+  // },
 
   showPopup() {
     this.setData({ show: true, popupType: 'picker' })
@@ -58,6 +73,88 @@ Page({
   goCompare() {
     wx.navigateTo({ url: '/pages/compare/index' })
   },
+  goReport() {
+    wx.switchTab({ url: '/pages/report/index' })
+  },
+  editRecord(evt) {
+    const record = evt.target.dataset.record
+    const _id = record._id
+    app.globalData.recordId = _id
+    wx.switchTab({ url: '/pages/report/index' })
+
+    console.log(evt)
+  },
+
+  deleteRecord(evt) {
+    const record = evt.target.dataset.record
+    const id = record._id
+    wx.showModal({
+      title: '提示',
+      content: '确认删除本条记录吗？',
+      success: (res) => {
+        if (res.confirm) {
+          console.log('用户点击确定')
+          this.deleteRecordService(id)
+        }
+      },
+    })
+    console.log(evt)
+  },
+
+  deleteRecordService(id) {
+    api.wxCloudCallFunction('removeOne', {
+      collectionName: 'scores',
+      _id: id,
+    }).then(res => {
+      console.log(res)
+      wx.showToast({
+        title: '删除成功'
+      })
+      this.getRecordList()
+    })
+  },
+
+  getRecordList(grade) {
+    if (grade === '全部') {
+      grade = undefined
+    }
+    wx.showLoading({ title: '加载中...' })
+    api.wxCloudCallFunction('findAll', {
+      collectionName: 'scores',
+      grade,
+    }).then(({ data }) => {
+      app.globalData.openid =
+      console.log();
+  
+      const result = {}
+      data.forEach(v => {
+        if (!result[v.grade]) {
+          result[v.grade] = []
+        }
+        result[v.grade].push(v)
+      })
+      const gradeMap = {}
+      gradeColumn.forEach((value, index) => {
+        gradeMap[value] = index
+      })
+      const sortColumn = Object.keys(result).sort((a, b) => gradeMap[a] - gradeMap[b])
+
+      this.setData({
+        records: result,
+        gradeColumn: sortColumn,
+      })
+
+      console.log(data)
+    }).finally(() => {
+      wx.stopPullDownRefresh()
+      wx.hideLoading()
+    })
+  },
+
+  onPullDownRefresh() {
+    this.getRecordList(this.data.grade)
+  },
+
   getWxSetting() {
     wx.getSetting({
       success: res => {
@@ -76,14 +173,28 @@ Page({
     })
   },
 
-  onGetUserInfo(e) {
-    if (!this.data.logged && e.detail.userInfo) {
-      this.setData({
-        logged: true,
-        avatarUrl: e.detail.userInfo.avatarUrl,
-        userInfo: e.detail.userInfo,
-      })
-    }
+  onGetUserInfo(id) {
+    api.wxCloudCallFunction('findAll',{
+      collectionName: 'users',
+      open_id: id
+    }).then(({data}) => {
+      if (data && data.length) {
+        app.globalData.userInfo = JSON.parse(data[0].rawData)
+      } else {
+      
+      }
+      console.log(data);
+      // if ( && data.length) {
+      //   console.log(data);
+      // }
+    })
+    // if (!this.data.logged && e.detail.userInfo) {
+    //   this.setData({
+    //     logged: true,
+    //     avatarUrl: e.detail.userInfo.avatarUrl,
+    //     userInfo: e.detail.userInfo,
+    //   })
+    // }
   },
 
   onGetOpenid() {
@@ -92,17 +203,19 @@ Page({
       name: 'login',
       data: {},
       success: res => {
-        console.log('[云函数] [login] user openid: ', res.result.openid)
-        app.globalData.openid = res.result.openid
-        wx.navigateTo({
-          url: '../userConsole/userConsole',
-        })
+        const openID = res.result.openid
+        app.globalData.openid = openID
+        this.onGetUserInfo(openID)
+        
+        // wx.navigateTo({
+        //   url: '../userConsole/userConsole',
+        // })
       },
       fail: err => {
         console.error('[云函数] [login] 调用失败', err)
-        wx.navigateTo({
-          url: '../deployFunctions/deployFunctions',
-        })
+        // wx.navigateTo({
+        //   url: '../deployFunctions/deployFunctions',
+        // })
       },
     })
   },
@@ -153,43 +266,5 @@ Page({
         console.error(e)
       },
     })
-  },
-
-  getRecordList(grade) {
-    if (grade === '全部') {
-      grade = undefined
-    }
-    wx.showLoading({ title: '加载中...' })
-    api.wxCloudCallFunction('findAll', {
-      collectionName: 'scores',
-      grade,
-    }).then(({ data }) => {
-      const result = {}
-      data.forEach(v => {
-        if (!result[v.grade]) {
-          result[v.grade] = []
-        }
-        result[v.grade].push(v)
-      })
-      const gradeMap = {}
-      gradeColumn.forEach((value, index) => {
-        gradeMap[value] = index
-      })
-      const sortColumn = Object.keys(result).sort((a, b) => gradeMap[a] - gradeMap[b])
-
-      this.setData({
-        records: result,
-        gradeColumn: sortColumn,
-      })
-
-      console.log(data)
-    }).finally(() => {
-      wx.stopPullDownRefresh()
-      wx.hideLoading()
-    })
-  },
-
-  onPullDownRefresh() {
-    this.getRecordList(this.data.grade)
   },
 })

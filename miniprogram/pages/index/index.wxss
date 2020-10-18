@@ -20,3 +20,10 @@ page {
 	right: 30%;
 	margin: auto;
 }
+
+.action{
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 10rpx;
+}
