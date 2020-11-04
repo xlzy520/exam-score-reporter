@@ -1,6 +1,6 @@
 {
   "miniprogramRoot": "miniprogram/",
-  "cloudfunctionRoot": "cloudfunctions/",
+  "cloudfunctionRoot": "/static/cloudfunctions-tcb/",
   "setting": {
     "urlCheck": false,
     "es6": true,
