@@ -1,6 +1,10 @@
 {
   "pages": [
     {
+      "path": "pages/chart/index",
+      "style": {}
+    },
+    {
       "path": "pages/report/index",
       "style": {}
     },
@@ -23,10 +27,7 @@
       }
     },
 
-    {
-      "path": "pages/chart/index",
-      "style": {}
-    },
+
     {
       "path": "pages/compare/index",
       "style": {}
