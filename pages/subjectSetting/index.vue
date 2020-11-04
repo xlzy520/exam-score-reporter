@@ -1,35 +1,37 @@
 <template>
 <view class="container">
   <gradePicker title="年级" :grade="grade" :term="term" @change="changeGrade"></gradePicker>
-<!--  <van-cell title="年级" is-link value="{{grade}}" arrow-direction="down" bind:click="showPopup" />-->
   <van-popup :show="show" position="bottom" @close="onClose">
-<!--    <van-picker columns="{{ columns }}" default-index="2" show-toolbar-->
-<!--                wx:if="{{popupType==='picker'}}"-->
-<!--                bind:cancel="onClose"-->
-<!--                bind:confirm="onConfirm" />-->
     <view>
-      <van-field :model:value="subjectName" label="科目名称" auto-focus placeholder="请输入科目名称"></van-field>
+      <van-field :value="subjectName" @change="changeSubjectName"
+                 label="科目名称" auto-focus placeholder="请输入科目名称" />
       <van-button class="padding-btn" block round @tap="addNewSubject" type="primary">
         提交
       </van-button>
-
     </view>
-
   </van-popup>
 
   <van-cell-group title="科目信息及满分">
-    <van-field v-for="(item, index) in subjects" :key="index" :value="item.full" :label="item.name" :data-index="index" maxlength="3" :placeholder="item.name + '满分'" :error="subjectErrors[index]" type="number" @change="changeSubjectFullScore">
-      <van-icon slot="right-icon" name="close" @tap="deleteSubject" :data-index="index"></van-icon>
+    <van-field v-for="(item, index) in subjects"
+               :key="index" :value="item.full" :label="item.name"
+               maxlength="3" :placeholder="item.name + '满分'"
+               :error="subjectErrors[index]"
+               type="number" @change="evt=>changeSubjectFullScore(evt, index)">
+      <van-icon slot="right-icon" name="close" @tap="deleteSubject"></van-icon>
     </van-field>
   </van-cell-group>
 
-  <van-button class="padding-btn" block round @tap="showNewSubjectPopup" color="linear-gradient(to right, #4bb0ff, #6149f6)">
+  <van-button class="padding-btn" block round
+              @tap="showPopup"
+              color="linear-gradient(to right, #4bb0ff, #6149f6)">
     <view class="df flex-center">
       <van-icon name="plus"></van-icon>
       增加科目信息
     </view>
   </van-button>
-  <van-button class="padding-btn" block round @tap="submit" :loading="loading" loading-type="spinner" :loading-text="loadingText + '中'" type="danger">
+  <van-button class="padding-btn" block round
+              @tap="submit" :loading="loading" loading-type="spinner"
+              :loading-text="loadingText + '中'" type="danger">
     {{subjectId ? '更新': '保存'}}
   </van-button>
 
@@ -39,7 +41,6 @@
 </template>
 
 <script>
-// logs.js
 import Toast from '../../wxcomponents/vant/toast/toast'
 import { defaultSubjects, gradeColumn } from '../../utils/enum'
 import gradePicker from '../../components/gradePicker/index.vue'
@@ -55,7 +56,6 @@ export default {
       columns: gradeColumn,
       grade: '初三',
       term: '上学期',
-      popupType: 'subject',
       subjects: defaultSubjects,
       subjectErrors: [],
       subjectName: '',
@@ -76,10 +76,12 @@ export default {
   },
 
   methods: {
+    changeSubjectName(evt) {
+      this.subjectName = evt.detail
+    },
     showPopup() {
       this.show = true
     },
-
     onClose() {
       this.show = false
     },
@@ -91,11 +93,6 @@ export default {
       this.getSubject()
     },
 
-    showNewSubjectPopup() {
-      this.showPopup()
-      this.popupType = 'subject'
-    },
-
     addNewSubject() {
       const subjectName = this.subjectName
 
@@ -105,26 +102,24 @@ export default {
       }
 
       const _subjects = [...this.subjects]
-
       _subjects.push({
         name: subjectName,
         full: '',
       })
       this.onClose()
       this.subjects = _subjects
+      this.subjectName = ''
     },
 
     deleteSubject(evt) {
       const index = evt.target.dataset.index
       const _subjects = [...this.subjects]
-
       _subjects.splice(index, 1)
       this.subjects = _subjects
     },
 
-    changeSubjectFullScore(evt) {
+    changeSubjectFullScore(evt, index) {
       const value = evt.detail
-      const index = evt.target.dataset.index
       const _subjects = [...this.subjects]
       _subjects[index].full = value
       this.subjects = _subjects
@@ -139,7 +134,6 @@ export default {
           hasEmpty = true
           return true
         }
-
         return false
       })
 
@@ -194,7 +188,7 @@ export default {
           this.subjectId = data[0]._id
         } else {
           Toast('未查询到相关信息，使用默认课程信息')
-          this.subjects = defaultSubjects
+          // this.subjects = defaultSubjects
           this.subjectId = ''
         }
       }).finally(() => {
@@ -206,16 +200,5 @@ export default {
 }
 </script>
 <style>
-.df{
-	display: flex;
-}
-.flex-center{
-	align-items: center;
-}
-
-.padding-btn{
-	display: block;
-	padding: 15rpx 30rpx;
-}
 
 </style>
