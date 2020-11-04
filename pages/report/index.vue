@@ -1,29 +1,36 @@
 <template>
 <view class="container">
   <gradePicker title="年级" :grade="grade" :term="term" @change="changeGrade"></gradePicker>
-
-  <!--  <van-cell title="年级" is-link value="{{currentGrade}}" arrow-direction="down" bind:click="showPopup" />-->
   <van-popup :show="show" position="bottom" @close="onClose">
-<!--    <van-picker columns="{{ columns }}" show-toolbar-->
-<!--                wx:if="{{popupType==='picker'}}"-->
-<!--                bind:cancel="onClose"-->
-<!--                bind:confirm="onConfirm" />-->
-    <van-datetime-picker type="date" v-if="popupType==='date'" :value="examDate" @input="onInputDate" :formatter="formatter" @cancel="onClose" @confirm="onConfirmDate"></van-datetime-picker>
+    <van-datetime-picker type="date"
+                         v-if="popupType==='date'"
+                         :value="examDate" @input="onInputDate"
+                         :formatter="formatter"
+                         @cancel="onClose"
+                         @confirm="onConfirmDate" />
   </van-popup>
   <van-cell-group title="考试信息">
-    <van-field :model:value="examName" label="考试名称" auto-focus placeholder="请输入考试名称"></van-field>
+    <van-field :value="examName" @change="evt=>changeData(evt, 'examName')"
+               label="考试名称" auto-focus placeholder="请输入考试名称" />
 
-    <van-cell title="考试日期" is-link :value="examDateText" arrow-direction="down" @click="showDatePopup"></van-cell>
+    <van-cell title="考试日期" is-link :value="examDateText"
+              arrow-direction="down" @click="showDatePopup"></van-cell>
   </van-cell-group>
 
   <van-cell-group title="排名信息">
-    <van-field :model:value="rankClass" label="班级排名" type="number" placeholder="请输入班级排名"></van-field>
-    <van-field :model:value="rankGrade" label="年级排名" type="number" placeholder="请输入年级排名"></van-field>
+    <van-field :value="rankClass" @change="evt=>changeData(evt, 'rankClass')"
+               label="班级排名" type="number" placeholder="请输入班级排名"></van-field>
+    <van-field :value="rankGrade" @change="evt=>changeData(evt, 'rankGrade')"
+               label="年级排名" type="number" placeholder="请输入年级排名"></van-field>
 
   </van-cell-group>
 
   <van-cell-group title="科目信息">
-    <van-field v-for="(item, index) in subjects" :key="index" :value="item.value" :label="item.name" :data-index="index" maxlength="5" :placeholder="'本次' + item.name + '得分'" :error="subjectErrors[index]" type="digit" @change="changeSubjectFullScore">
+    <van-field v-for="(item, index) in subjects" :key="item.name"
+               :value="item.value" :label="item.name" maxlength="5"
+               :placeholder="'本次' + item.name + '得分'"
+               :error="subjectErrors[index]" type="digit"
+               @change="evt=>changeSubjectFullScore(evt, index)">
       <view slot="right-icon">({{item.full}}分)</view>
     </van-field>
     <view class="df no-subject">
@@ -41,12 +48,16 @@
 <!--      <van-cell title="不及格科目" value="{{average}}" />-->
   </van-cell-group>
 
-  <van-button class="padding-btn" block round @tap="submit" @getuserinfo="getUserInfo" open-type="getUserInfo" :loading="loading" loading-type="spinner" :loading-text="loadingText + '中'" type="danger">
+  <van-button class="padding-btn" block round open-type="getUserInfo"
+              :loading="loading" loading-type="spinner"
+              :loading-text="loadingText + '中'" type="danger"
+              @tap="submit" @getuserinfo="getUserInfo">
     {{subjectId ? '更新': '保存'}}
   </van-button>
-  <van-button class="padding-btn" block round @tap="reset" type="info">重置</van-button>
+  <van-button class="padding-btn" block round
+              @tap="reset" type="info">重置</van-button>
 
-  <van-toast id="van-toast"></van-toast>
+  <van-toast id="van-toast" />
 
 </view>
 </template>
@@ -54,8 +65,8 @@
 <script>
 import dayjs from 'dayjs'
 import Toast from '../../wxcomponents/vant/toast/toast'
-import { defaultSubjects, gradeColumn } from '../../utils/enum'
 import gradePicker from '../../components/gradePicker/index.vue'
+import { defaultSubjects, gradeColumn } from '../../utils/enum'
 
 const api = require('../../utils/api.js')
 
@@ -64,7 +75,6 @@ const defaultReportData = {
   grade: '初三',
   term: '上学期',
   subjects: defaultSubjects,
-  total: 0,
   score: 0,
   rate: 0,
   average: 0,
@@ -83,7 +93,7 @@ export default {
       grade: '初三',
       term: '上学期',
       subjects: defaultSubjects,
-      total: 0,
+      // total: 0,
       score: 0,
       rate: 0,
       average: 0,
@@ -109,17 +119,14 @@ export default {
   },
   props: {},
 
-  onLoad(e) { // const id = e.id || app.recordId
-    // if (id) {
-    //   this.getScores(id)
-    // }
+  onLoad() {
+
   },
 
   onShow(e) {
-    const id = e && e.id || app.globalData.recordId || this.subjectId
+    const id = (e && e.id) || app.globalData.recordId || this.subjectId
     this.setGradeTerm()
     console.log(id)
-
     if (id) {
       this.getScores(id)
     } else {
@@ -128,6 +135,12 @@ export default {
   },
 
   onHide() { // this.reset()
+  },
+
+  computed: {
+    total() {
+      return this.subjects.reduce((pre, cur) => Number(cur.full) + pre, 0)
+    },
   },
 
   methods: {
@@ -139,6 +152,10 @@ export default {
       }
 
       return value
+    },
+
+    changeData({ detail }, key) {
+      this[key] = detail
     },
 
     showDatePopup() {
@@ -168,9 +185,8 @@ export default {
       this.examDate = event.detail
     },
 
-    changeSubjectFullScore(evt) {
+    changeSubjectFullScore(evt, index) {
       const value = evt.detail
-      const index = evt.target.dataset.index
       const _subjects = [...this.subjects]
       const full = _subjects[index].full
 
@@ -186,7 +202,6 @@ export default {
     },
 
     submit(e) {
-      console.log(e)
       let hasEmpty = false
       const {
         examDate,
@@ -260,10 +275,6 @@ export default {
       })
     },
 
-    computeTotalFull(subjects) {
-      this.total = subjects.reduce((pre, cur) => Number(cur.full) + pre, 0)
-    },
-
     computeTotalScores(subjects) {
       const score = subjects.reduce((pre, cur) => {
         if (cur.value) {
@@ -290,12 +301,10 @@ export default {
         if (data && data.length) {
           const subjects = data[0].subjects
           this.subjects = subjects
-          this.computeTotalFull(subjects)
         } else {
           Toast('未查询到相关信息，使用默认课程信息')
           this.subjects = defaultSubjects
           this.subjectId = ''
-          this.computeTotalFull(defaultSubjects)
         }
       }).finally(() => {
         uni.hideLoading()
@@ -322,18 +331,12 @@ export default {
               this[dataKey] = data[dataKey]
             }
           }
-          // this.setData({
-          //   ...data
-          // });
-          this.computeTotalFull(subjects)
           this.computeTotalScores(subjects)
         }
       }).finally(() => {
         uni.hideLoading()
       })
     },
-
-    getWxSetting() {},
 
     goConfig() {
       uni.navigateTo({
@@ -377,35 +380,31 @@ export default {
   },
 }
 </script>
-<style>
-/**index.wxss**/
 
-.total-score{
-}
+<style lang="scss">
+  .total-score{
+     .van-cell-group{
+      padding-top: 30rpx;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      background: #fff;
+    }
+  }
+  .no-subject{
+    font-size: 30rpx;
+    color: #ccc;
+    justify-content: center;
+    align-items: center;
+    padding: 10rpx;
+    background: #fff;
+    .no-subject-text{
 
-.total-score .van-cell-group{
-	padding-top: 30rpx;
-	display: flex;
-	flex-direction: column;
-	justify-content: center;
-	align-items: center;
-	background: #fff;
-}
-
-.no-subject{
-	font-size: 30rpx;
-	color: #ccc;
-	justify-content: center;
-	align-items: center;
-	padding: 10rpx;
-	background: #fff;
-}
-
-.no-subject-text{
-
-}
-.no-subject-btn{
-	color: #1296db;
-}
+    }
+    .no-subject-btn{
+      color: #1296db;
+    }
+  }
 
 </style>
