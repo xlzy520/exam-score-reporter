@@ -138,9 +138,7 @@ export default {
       })
 
       if (hasEmpty) {
-        this.setData({
-          subjectErrors,
-        })
+        this.subjectErrors = subjectErrors
         Toast('存在不合法的输入')
         return
       }
