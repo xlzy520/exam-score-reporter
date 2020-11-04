@@ -1,8 +1,10 @@
 // .eslintrc.js 文件内容， 此处是eslint的规则定义， 可自行修改，可参考eslint官网修改
 module.exports = {
+  root: true,
   extends: [
-    'airbnb-base',
-    'eslint:recommended'
+    // 'eslint:recommended',
+    'plugin:vue/essential',
+    'airbnb-base'
   ],
   parserOptions: {
     ecmaVersion: 9,
@@ -12,13 +14,15 @@ module.exports = {
     sourceType: 'module',
   },
   env: {
+    browser: true,
     es6: true,
     node: true,
     jest: true,
   },
   plugins: [
     'import',
-    'node'
+    'node',
+    'vue'
   ],
   rules: {
     'arrow-parens': 'off',

@@ -14,3 +14,8 @@ $RECYCLE.BIN/
 node_modules/
 .idea
 pnpm-lock.yaml
+
+# uniapp
+unpackage
+node_modules
+miniprogram_npm

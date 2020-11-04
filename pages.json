@@ -1,0 +1,96 @@
+{
+  "pages": [
+    {
+      "path": "pages/index/index",
+      "style": {
+        "enablePullDownRefresh": true
+      }
+    },
+    {
+      "path": "pages/subjectSetting/index",
+      "style": {
+        "navigationBarTitleText": "添加课程信息"
+      }
+    },
+    {
+      "path": "pages/my/index",
+      "style": {
+        "navigationBarTitleText": "我的"
+      }
+    },
+    {
+      "path": "pages/report/index",
+      "style": {}
+    },
+    {
+      "path": "pages/chart/index",
+      "style": {}
+    },
+    {
+      "path": "pages/compare/index",
+      "style": {}
+    }
+  ],
+  "tabBar": {
+    "color": "#919191",
+    "selectedColor": "#FF6699",
+    "backgroundColor": "#fff",
+    "position": "bottom",
+    "list": [
+      {
+        "pagePath": "pages/index/index",
+        "text": "首页",
+        "iconPath": "/static/images/home.png",
+        "selectedIconPath": "/static/images/home-active.png"
+      },
+      {
+        "pagePath": "pages/report/index",
+        "text": "成绩登记",
+        "iconPath": "/static/images/report.png",
+        "selectedIconPath": "/static/images/report-active.png"
+      },
+      {
+        "pagePath": "pages/chart/index",
+        "text": "可视化",
+        "iconPath": "/static/images/chart.png",
+        "selectedIconPath": "/static/images/chart-active.png"
+      },
+      {
+        "pagePath": "pages/my/index",
+        "text": "我的",
+        "iconPath": "/static/images/my.png",
+        "selectedIconPath": "/static/images/my-active.png"
+      }
+    ]
+  },
+  "sitemapLocation": "sitemap.json",
+  "globalStyle": {
+    "backgroundColor": "#F6F6F6",
+    "backgroundTextStyle": "light",
+    "navigationBarBackgroundColor": "#F6F6F6",
+    "navigationBarTitleText": "考试成绩记录",
+    "navigationBarTextStyle": "black",
+    "usingComponents": {
+      "van-button": "/wxcomponents/vant/button/index",
+      "van-field": "/wxcomponents/vant/field/index",
+      "van-cell": "/wxcomponents/vant/cell/index",
+      "van-cell-group": "/wxcomponents/vant/cell-group/index",
+      "van-row": "/wxcomponents/vant/row/index",
+      "van-col": "/wxcomponents/vant/col/index",
+      "van-popup": "/wxcomponents/vant/popup/index",
+      "van-picker": "/wxcomponents/vant/picker/index",
+      "van-icon": "/wxcomponents/vant/icon/index",
+      "van-toast": "/wxcomponents/vant/toast/index",
+      "van-circle": "/wxcomponents/vant/circle/index",
+      "van-loading": "/wxcomponents/vant/loading/index",
+      "van-datetime-picker": "/wxcomponents/vant/datetime-picker/index",
+      "van-collapse": "/wxcomponents/vant/collapse/index",
+      "van-collapse-item": "/wxcomponents/vant/collapse-item/index",
+      "van-grid": "/wxcomponents/vant/grid/index",
+      "van-grid-item": "/wxcomponents/vant/grid-item/index",
+      "van-empty": "/wxcomponents/vant/empty/index",
+      "van-dialog": "/wxcomponents/vant/dialog/index"
+    }
+  },
+  "subPackages": []
+}
