@@ -1,32 +1,30 @@
 <template>
 <view class="container">
-  <gradePicker title="年级" :grade="grade" :term="term" @change="changeGrade"></gradePicker>
+  <gradePicker title="年级" :grade="reportData.grade" :term="reportData.term" @change="changeGrade"></gradePicker>
   <van-popup :show="show" position="bottom" @close="onClose">
-    <van-datetime-picker type="date"
-                         v-if="popupType==='date'"
-                         :value="examDate" @input="onInputDate"
+    <van-datetime-picker type="date" :value="reportData.examDate" @input="onInputDate"
                          :formatter="formatter"
                          @cancel="onClose"
                          @confirm="onConfirmDate" />
   </van-popup>
   <van-cell-group title="考试信息">
-    <van-field :value="examName" @change="evt=>changeData(evt, 'examName')"
+    <van-field :value="reportData.examName" @change="evt=>changeData(evt, 'examName')"
                label="考试名称" auto-focus placeholder="请输入考试名称" />
 
-    <van-cell title="考试日期" is-link :value="examDateText"
+    <van-cell title="考试日期" is-link :value="reportData.examDateText"
               arrow-direction="down" @click="showDatePopup"></van-cell>
   </van-cell-group>
 
   <van-cell-group title="排名信息">
-    <van-field :value="rankClass" @change="evt=>changeData(evt, 'rankClass')"
+    <van-field :value="reportData.rankClass" @change="evt=>changeData(evt, 'rankClass')"
                label="班级排名" type="number" placeholder="请输入班级排名"></van-field>
-    <van-field :value="rankGrade" @change="evt=>changeData(evt, 'rankGrade')"
+    <van-field :value="reportData.rankGrade" @change="evt=>changeData(evt, 'rankGrade')"
                label="年级排名" type="number" placeholder="请输入年级排名"></van-field>
 
   </van-cell-group>
 
   <van-cell-group title="科目信息">
-    <van-field v-for="(item, index) in subjects" :key="item.name"
+    <van-field v-for="(item, index) in reportData.subjects" :key="item.name"
                :value="item.value" :label="item.name" maxlength="5"
                :placeholder="'本次' + item.name + '得分'"
                :error="subjectErrors[index]" type="digit"
@@ -39,12 +37,13 @@
     </view>
   </van-cell-group>
   <van-cell-group :title="'总分 (' + total + ')'" class="total-score">
-    <van-circle :value="rate" layer-color="#f6f6f6" stroke-width="6" :color="gradientColor">
-      得分 {{score}}
+    <van-circle :value="reportData.rate" layer-color="#f6f6f6"
+                stroke-width="6" :color="gradientColor">
+      得分 {{reportData.score}}
     </van-circle>
   </van-cell-group>
   <van-cell-group title="统计">
-      <van-cell title="平均分" :value="average"></van-cell>
+      <van-cell title="平均分" :value="reportData.average"></van-cell>
 <!--      <van-cell title="不及格科目" value="{{average}}" />-->
   </van-cell-group>
 
@@ -89,19 +88,8 @@ export default {
   data() {
     return {
       show: false,
+      reportData: defaultReportData,
       columns: gradeColumn,
-      grade: '初三',
-      term: '上学期',
-      subjects: defaultSubjects,
-      // total: 0,
-      score: 0,
-      rate: 0,
-      average: 0,
-      examName: '',
-      examDate: new Date().getTime(),
-      examDateText: dayjs().format('YYYY-MM-DD'),
-      rankClass: 0,
-      rankGrade: 0,
       popupType: 'subject',
       subjectErrors: [],
       subjectId: '',
@@ -126,7 +114,6 @@ export default {
   onShow(e) {
     const id = (e && e.id) || app.globalData.recordId || this.subjectId
     this.setGradeTerm()
-    console.log(id)
     if (id) {
       this.getScores(id)
     } else {
@@ -139,7 +126,7 @@ export default {
 
   computed: {
     total() {
-      return this.subjects.reduce((pre, cur) => Number(cur.full) + pre, 0)
+      return this.reportData.subjects.reduce((pre, cur) => Number(cur.full) + pre, 0)
     },
   },
 
@@ -155,12 +142,11 @@ export default {
     },
 
     changeData({ detail }, key) {
-      this[key] = detail
+      this.reportData[key] = detail
     },
 
     showDatePopup() {
       this.show = true
-      this.popupType = 'date'
     },
 
     onClose() {
@@ -169,34 +155,35 @@ export default {
 
     changeGrade(evt) {
       const [grade, term] = evt.detail
-      this.grade = grade
-      this.term = term
+      this.reportData.grade = grade
+      this.reportData.term = term
       this.getSubject()
     },
 
     onConfirmDate(event) {
       const value = event.detail
-      this.examDate = value
-      this.examDateText = dayjs(value).format('YYYY-MM-DD')
+      this.reportData.examDate = value
+      this.reportData.examDateText = dayjs(value).format('YYYY-MM-DD')
       this.onClose()
     },
 
     onInputDate(event) {
-      this.examDate = event.detail
+      this.reportData.examDate = event.detail
     },
 
     changeSubjectFullScore(evt, index) {
       const value = evt.detail
-      const _subjects = [...this.subjects]
+      const _subjects = [...this.reportData.subjects]
       const full = _subjects[index].full
 
       if (value > parseInt(full)) {
         Toast('不能超过满分')
+        this.reportData.subjects[index].value = 0
       } else {
         _subjects[index].value = value
       }
 
-      this.subjects = _subjects
+      this.reportData.subjects = _subjects
       this.subjectErrors = []
       this.computeTotalScores(_subjects)
     },
@@ -208,7 +195,7 @@ export default {
         examName,
         subjectId,
       } = this
-      const subjects = [...this.subjects]
+      const subjects = [...this.reportData.subjects]
 
       if (!examName) {
         hasEmpty = true
@@ -242,31 +229,16 @@ export default {
       const actionName = subjectId ? '更新' : '保存'
       this.loading = true
       this.loadingText = actionName
-      const {
-        examDateText, rankClass, rankGrade, grade, average, score, term,
-      } = this
-      const payload = {
-        grade,
-        subjects,
-        examName,
-        examDate,
-        examDateText,
-        rankClass,
-        rankGrade,
-        average,
-        score,
-        term,
-      }
-
       if (subjectId) {
-        payload._id = subjectId
+        this.reportData._id = subjectId
       }
 
       api.wxCloudCallFunction(name, {
         collectionName: 'scores',
-        ...payload,
+        ...this.reportData,
       }).then(res => {
         Toast(actionName + '成功')
+        this.reportData.subjectId = res._id
         console.log(res)
       }).finally(() => {
         this.loading = false
@@ -281,9 +253,10 @@ export default {
 
         return pre
       }, 0)
-      this.score = score
-      this.rate = (score / this.total).toFixed(2) * 100
-      this.average = (score / subjects.length).toFixed(2)
+      console.log(score)
+      this.reportData.score = score
+      this.reportData.rate = (score / this.total).toFixed(2) * 100
+      this.reportData.average = (score / subjects.length).toFixed(2)
     },
 
     getSubject() {
@@ -292,16 +265,16 @@ export default {
       })
       api.wxCloudCallFunction('findAll', {
         collectionName: 'gradeSubject',
-        grade: this.grade,
+        grade: this.reportData.grade,
       }).then(({
         data,
       }) => {
         if (data && data.length) {
           const subjects = data[0].subjects
-          this.subjects = subjects
+          this.reportData.subjects = subjects
         } else {
           Toast('未查询到相关信息，使用默认课程信息')
-          this.subjects = defaultSubjects
+          this.reportData.subjects = defaultSubjects
           this.subjectId = ''
         }
       }).finally(() => {
@@ -324,11 +297,7 @@ export default {
         if (data) {
           const subjects = data.subjects
           this.subjectId = id
-          for (const dataKey in data) {
-            if (data.hasOwnProperty(dataKey)) {
-              this[dataKey] = data[dataKey]
-            }
-          }
+          this.reportData = data
           this.computeTotalScores(subjects)
         }
       }).finally(() => {
@@ -358,11 +327,12 @@ export default {
     reset() {
       this.subjectId = ''
       this.subjectErrors = []
-      for (const dataKey in defaultReportData) {
-        if (defaultReportData.hasOwnProperty(dataKey)) {
-          this[dataKey] = defaultReportData[dataKey]
-        }
-      }
+      this.reportData = defaultReportData
+      // for (const dataKey in defaultReportData) {
+      //   if (defaultReportData.hasOwnProperty(dataKey)) {
+      //     this[dataKey] = defaultReportData[dataKey]
+      //   }
+      // }
       this.setGradeTerm()
       this.getSubject()
     },
@@ -370,8 +340,8 @@ export default {
     setGradeTerm() {
       const userInfo = app.globalData.userInfo
       if (userInfo && userInfo.grade) {
-        this.grade = userInfo.grade
-        this.term = userInfo.term
+        this.reportData.grade = userInfo.grade
+        this.reportData.term = userInfo.term
       }
     },
 
