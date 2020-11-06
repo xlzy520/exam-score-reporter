@@ -6,7 +6,17 @@
     <van-popup :show="show" position="bottom" @close="onClose">
       <van-picker :columns="columns" :default-index="gradeIndex" show-toolbar
                   v-if="popupType==='picker'" @cancel="onClose"
-        @confirm="onConfirm"></van-picker>
+        @confirm="onConfirm" />
+      <view class="change-log" v-if="popupType === 'changelog'">
+        <view class="title">更新日志</view>
+        <view class="version">当前版本: 1.1.1</view>
+        <view class="change-log-content">
+          <view class="changelog-item">1. 完善可视化页面,增加了三个图表</view>
+          <view class="changelog-item">2. 完善成绩对比页面，可以选择任意两次考试</view>
+          <view class="changelog-item">3. "我的"页面增加提交反馈入口，可以说出你的意见</view>
+          <view class="changelog-item">点击弹窗外关闭</view>
+        </view>
+      </view>
     </van-popup>
     <van-cell-group v-for="(item, gradeIndex) in gradeColumn" :key="gradeIndex" :title="item">
       <van-collapse :value="activeNames" @change="onChange">
@@ -67,6 +77,8 @@ export default {
       takeSession: false,
       requestResult: '',
       records: null,
+      changeLogShow: false,
+      changeLog: ''
     }
   },
 
@@ -77,6 +89,13 @@ export default {
     this.gradeIndex = this.columns.findIndex(value => value === this.grade) || 0
     if (!app.globalData.openid) {
       this.onGetOpenid()
+    }
+    const version = wx.getStorageSync('version')
+    if (version !== '1.1.0') {
+      wx.setStorageSync('version', '1.1.0')
+      this.popupType = 'changelog'
+      this.show = true
+      // this.changeLogShow = true
     }
   },
   onShow() {
@@ -229,7 +248,7 @@ export default {
   },
 }
 </script>
-<style>
+<style lang="scss">
   /**index.wxss**/
 
   page {
@@ -260,5 +279,29 @@ export default {
     justify-content: space-between;
     align-items: center;
     margin-bottom: 10rpx;
+  }
+
+  .change-log{
+    min-height: 65vh;
+    padding: 60upx;
+    &-content{
+      .changelog-item{
+        font-size: 40upx;
+        line-height: 1.5;
+        color: #1296db;
+      }
+    }
+    .title{
+      font-size: 60upx;
+      font-weight: bold;
+      padding: 40upx 40upx 20upx;
+      text-align: center;
+    }
+    .version{
+      font-size: 40upx;
+      font-weight: bold;
+      padding: 20upx;
+      text-align: center;
+    }
   }
 </style>
