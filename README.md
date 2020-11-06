@@ -19,3 +19,8 @@
 ### TODO
 1. 图表查看总成绩、排名或单科成绩的变化曲线
 2. 考试成绩对比(总成绩、排名或单科成绩)
+
+
+### install
+1. 云函数文件存储在`static/cloudfunctions-tcb`中
+2. 云数据库表: `scores`，`gradeSubject`，`users`, `report`
