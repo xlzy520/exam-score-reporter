@@ -91,8 +91,8 @@ export default {
       this.onGetOpenid()
     }
     const version = wx.getStorageSync('version')
-    if (version !== '1.1.0') {
-      wx.setStorageSync('version', '1.1.0')
+    if (version !== '1.1.1') {
+      wx.setStorageSync('version', '1.1.1')
       this.popupType = 'changelog'
       this.show = true
       // this.changeLogShow = true
