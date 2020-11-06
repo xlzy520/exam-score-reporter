@@ -64,8 +64,8 @@
 
 <script>
 import dayjs from 'dayjs'
-import Toast from '../../wxcomponents/vant/toast/toast'
-import gradePicker from '../../components/gradePicker/index.vue'
+import Toast from 'wxcomponents/vant/toast/toast'
+import gradePicker from 'components/gradePicker/index.vue'
 import { defaultSubjects, gradeColumn } from '../../utils/enum'
 
 const api = require('../../utils/api.js')
