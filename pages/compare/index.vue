@@ -15,7 +15,7 @@
   </view>
   <van-empty v-if="!canCompare" description="暂无足够的数据进行对比"></van-empty>
   <view class="tips">
-    可以选择相同考试科目的两次考试成绩进行各项数据的比较。如有新需求，请去我的页面提交
+    如有新需求，请去我的页面提交
   </view>
   <van-toast id="van-toast" />
 
