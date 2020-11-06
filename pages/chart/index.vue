@@ -227,7 +227,7 @@ export default {
           lineHeight: 21,
           margin: 0,
         },
-        dataLabel: false,
+        dataLabel: true,
         dataPointShape: true,
         background: '#FFFFFF',
         pixelRatio: 1,
@@ -239,13 +239,9 @@ export default {
 
         },
         yAxis: {
-          // gridType: 'dash',
-          // gridColor: '#CCCCCC',
-          // dashLength: 8,
           splitNumber: 5,
           min: 0,
           max: 150,
-          // format: (val) => val.toFixed(0) + '元',
         },
         width: this.cWidth,
         height: this.cHeight,
@@ -263,17 +259,6 @@ export default {
       Pie.series = this.currentExamData.subjects.map(s => ({ name: s.name + ':' + s.value, data: Number(s.value) }))
 
       this.showPie('canvasPie', Pie)
-      console.log(Column)
-      const ss = {
-        categories: ['2012', '2013', '2014', '2015', '2016', '2017'],
-        series: [{
-          name: '成交量1',
-          data: [15, { value: 20, color: '#f04864' }, 45, 37, 43, 34],
-        }, {
-          name: '成交量2',
-          data: [30, { value: 40, color: '#facc14' }, 25, 14, 34, 18],
-        }],
-      }
       this.showBaseLine('canvasBaseLine', Column)
     },
     changeGradeAndTermExamList() {
