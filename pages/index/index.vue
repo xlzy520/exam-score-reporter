@@ -1,21 +1,27 @@
 <template>
   <!--index.wxml-->
   <view class="container">
-    <van-cell title="年级" is-link :value="grade" arrow-direction="down" @click="showPopup"></van-cell>
+    <van-cell title="年级" is-link :value="grade" arrow-direction="down"
+              @click="showPopup"></van-cell>
     <van-popup :show="show" position="bottom" @close="onClose">
-      <van-picker :columns="columns" :default-index="gradeIndex" show-toolbar v-if="popupType==='picker'" @cancel="onClose"
+      <van-picker :columns="columns" :default-index="gradeIndex" show-toolbar
+                  v-if="popupType==='picker'" @cancel="onClose"
         @confirm="onConfirm"></van-picker>
     </van-popup>
     <van-cell-group v-for="(item, gradeIndex) in gradeColumn" :key="gradeIndex" :title="item">
       <van-collapse :value="activeNames" @change="onChange">
-        <van-collapse-item v-for="(group, index) in records[item]" :key="index" :title="group.examDateText" :name="gradeIndex+'-'+index"
+        <van-collapse-item v-for="(group, index) in records[item]" :key="index"
+                           :title="group.examDateText" :name="gradeIndex+'-'+index"
           :value="group.examName">
           <view class="action">
-            <van-button type="primary" size="mini" :data-record="group" @tap="editRecord">前往编辑</van-button>
-            <van-button type="danger" size="mini" :data-record="group" @tap="deleteRecord">删除</van-button>
+            <van-button type="primary" size="mini" :data-record="group"
+                        @tap="editRecord">前往编辑</van-button>
+            <van-button type="danger" size="mini" :data-record="group"
+                        @tap="deleteRecord">删除</van-button>
           </view>
           <van-grid column-num="3" class="subject-score">
-            <van-grid-item v-for="(subject, index2) in group.subjects" :key="index2" :text="subject.value">
+            <van-grid-item v-for="(subject, index2) in group.subjects" :key="index2"
+                           :text="subject.value">
               <view slot="icon">{{subject.name}}</view>
             </van-grid-item>
           </van-grid>
@@ -27,24 +33,23 @@
       </van-collapse>
     </van-cell-group>
     <view class="fixed compare-btn" v-if="records">
-      <van-button color="#7232dd" class="padding-btn" block round @tap="goCompare" type="danger">成绩对比</van-button>
+      <van-button color="#7232dd" class="padding-btn" block round @tap="goCompare"
+                  type="danger">成绩对比</van-button>
     </view>
     <view v-if="records && !gradeColumn.length">
       <van-empty description="暂无成绩记录">
-        <van-button color="#7232dd" class="padding-btn" block round @tap="goReport" type="danger">去记录我的成绩吧</van-button>
+        <van-button color="#7232dd" class="padding-btn" block round @tap="goReport"
+                    type="danger">去记录我的成绩吧</van-button>
       </van-empty>
     </view>
   </view>
 </template>
 
 <script>
-// index.js
-import {
-  gradeColumn
-} from '../../utils/enum'
+import { gradeColumn } from 'utils/enum'
+import api from 'utils/api'
 
 const app = getApp()
-const api = require('../../utils/api.js')
 
 export default {
   data() {
@@ -193,21 +198,6 @@ export default {
       })
     },
 
-    getWxSetting() {
-      uni.getSetting({
-        success: res => {
-          if (res.authSetting['scope.userInfo']) {
-            // 已经授权，可以直接调用 getUserInfo 获取头像昵称，不会弹框
-            uni.getUserInfo({
-              success: res => {
-                this.avatarUrl = res.userInfo.avatarUrl, this.userInfo = res.userInfo
-              },
-            })
-          }
-        },
-      })
-    },
-
     onGetUserInfo(id) {
       api.wxCloudCallFunction('findAll', {
         collectionName: 'users',
@@ -217,86 +207,25 @@ export default {
       }) => {
         if (data && data.length) {
           app.globalData.userInfo = JSON.parse(data[0].rawData)
-        } else {}
-
-        console.log(data) // if ( && data.length) {
-        //   console.log(data);
-        // }
-      }) // if (!this.data.logged && e.detail.userInfo) {
-      //   this.setData({
-      //     logged: true,
-      //     avatarUrl: e.detail.userInfo.avatarUrl,
-      //     userInfo: e.detail.userInfo,
-      //   })
-      // }
+        }
+        console.log(data)
+      })
     },
 
     onGetOpenid() {
-      // 调用云函数
       wx.cloud.callFunction({
         name: 'login',
         data: {},
         success: res => {
           const openID = res.result.openid
           app.globalData.openid = openID
-          this.onGetUserInfo(openID) // wx.navigateTo({
-          //   url: '../userConsole/userConsole',
-          // })
+          this.onGetUserInfo(openID)
         },
         fail: err => {
-          console.error('[云函数] [login] 调用失败', err) // wx.navigateTo({
-          //   url: '../deployFunctions/deployFunctions',
-          // })
+          console.error('[云函数] [login] 调用失败', err)
         },
       })
     },
-
-    // 上传图片
-    doUpload() {
-      // 选择图片
-      uni.chooseImage({
-        count: 1,
-        sizeType: ['compressed'],
-        sourceType: ['album', 'camera'],
-
-        success(res) {
-          uni.showLoading({
-            title: '上传中',
-          })
-          const filePath = res.tempFilePaths[0] // 上传图片
-
-          const cloudPath = 'my-image' + filePath.match(/\.[^.]+?$/)[0]
-          uni.cloud.uploadFile({
-            cloudPath,
-            filePath,
-            success: res => {
-              console.log('[上传文件] 成功：', res)
-              app.globalData.fileID = res.fileID
-              app.globalData.cloudPath = cloudPath
-              app.globalData.imagePath = filePath
-              uni.navigateTo({
-                url: '../storageConsole/storageConsole',
-              })
-            },
-            fail: e => {
-              console.error('[上传文件] 失败：', e)
-              uni.showToast({
-                icon: 'none',
-                title: '上传失败',
-              })
-            },
-            complete: () => {
-              uni.hideLoading()
-            },
-          })
-        },
-
-        fail: e => {
-          console.error(e)
-        },
-      })
-    },
-
   },
 }
 </script>
