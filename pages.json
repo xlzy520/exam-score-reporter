@@ -1,23 +1,9 @@
 {
   "pages": [
     {
-      "path": "pages/chart/index",
-      "style": {}
-    },
-    {
-      "path": "pages/report/index",
-      "style": {}
-    },
-    {
       "path": "pages/index/index",
       "style": {
         "enablePullDownRefresh": true
-      }
-    },
-    {
-      "path": "pages/subjectSetting/index",
-      "style": {
-        "navigationBarTitleText": "添加课程信息"
       }
     },
     {
@@ -27,10 +13,23 @@
       }
     },
 
-
     {
       "path": "pages/compare/index",
       "style": {}
+    },
+    {
+      "path": "pages/chart/index",
+      "style": {}
+    },
+    {
+      "path": "pages/report/index",
+      "style": {}
+    },
+    {
+      "path": "pages/subjectSetting/index",
+      "style": {
+        "navigationBarTitleText": "添加课程信息"
+      }
     }
   ],
   "tabBar": {
@@ -91,7 +90,9 @@
       "van-grid": "/wxcomponents/vant/grid/index",
       "van-grid-item": "/wxcomponents/vant/grid-item/index",
       "van-empty": "/wxcomponents/vant/empty/index",
-      "van-dialog": "/wxcomponents/vant/dialog/index"
+      "van-dialog": "/wxcomponents/vant/dialog/index",
+      "van-dropdown-menu": "/wxcomponents/vant/dropdown-menu/index",
+      "van-dropdown-item": "/wxcomponents/vant/dropdown-item/index"
     }
   },
   "subPackages": []
