@@ -11,8 +11,6 @@
 <script>
 import { gradeAndTermColumn } from '../../utils/enum'
 
-const app = getApp()
-
 export default {
   data() {
     return {

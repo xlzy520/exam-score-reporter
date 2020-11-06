@@ -1,6 +1,7 @@
 <template>
 <view class="container">
-  <gradePicker title="年级" :grade="reportData.grade" :term="reportData.term" @change="changeGrade"></gradePicker>
+  <gradePicker title="年级" :grade="reportData.grade" :term="reportData.term"
+               @change="changeGrade"></gradePicker>
   <van-popup :show="show" position="bottom" @close="onClose">
     <van-datetime-picker type="date" :value="reportData.examDate" @input="onInputDate"
                          :formatter="formatter"

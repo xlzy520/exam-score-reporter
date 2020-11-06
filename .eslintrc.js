@@ -20,7 +20,6 @@ module.exports = {
     jest: true,
   },
   plugins: [
-    'import',
     'node',
     'vue'
   ],
