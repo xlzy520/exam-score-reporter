@@ -26,7 +26,7 @@
         </van-collapse-item>
       </van-collapse>
     </van-cell-group>
-    <view class="fixed compare-btn" v-if="!records">
+    <view class="fixed compare-btn" v-if="records">
       <van-button color="#7232dd" class="padding-btn" block round @tap="goCompare" type="danger">成绩对比</van-button>
     </view>
     <view v-if="records && !gradeColumn.length">
