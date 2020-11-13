@@ -1,11 +1,18 @@
 <template>
   <view>
-    <van-cell is-link title="问题反馈、需求提交" icon="notes-o" @click="showPopup"></van-cell>
+    <view class="fixed report-btn">
+      <van-button color="#7232dd" class="padding-btn" block round @tap="showPopup"
+                  type="danger">提交问题</van-button>
+    </view>
     <van-popup :show="show" position="bottom" @close="onClose">
       <view>
         <van-field class="feedback" :value="content" @change="changeValue"
                    type="textarea"  :autosize="{ minHeight: 50 }" auto-focus
                    placeholder="请输入问题反馈或需求提交" />
+        <van-radio-group :value="issueType" @change="changeIssueType">
+          <van-radio name="1">单选框 1</van-radio>
+          <van-radio name="2">单选框 2</van-radio>
+        </van-radio-group>
         <van-button class="padding-btn" block round @tap="submit" type="primary">
           提交
         </van-button>
@@ -25,7 +32,7 @@ export default {
     return {
       show: false,
       content: '',
-
+      issueType: ''
     }
   },
 
@@ -55,6 +62,9 @@ export default {
 
     changeValue(evt) {
       this.content = evt.detail
+    },
+    changeIssueType(evt) {
+      this.issueType = evt.detail
     },
     submit() {
       if (!this.content) {
