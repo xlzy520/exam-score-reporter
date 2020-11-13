@@ -9,14 +9,12 @@
               url="/pages/subjectSetting/index"></van-cell>
 <!--    <van-cell is-link title="问题反馈、需求提交" icon="notes-o" @click="feedBack"></van-cell>-->
 
-    <feedback />
+    <van-cell is-link title="问题列表查看、问题反馈提交" icon="notes-o"
+              link-type="navigateTo" url="/pages/feedback/index"></van-cell>
     <van-dialog title="标题" message="需要授权用户信息" :show="show"
                 show-cancel-button confirm-button-open-type="getUserInfo"
                 @close="onClose" @getuserinfo="getUserInfo" />
-<!--    <van-popup :show="show" position="bottom" @close="onClose">-->
-<!--      <van-picker :columns="columns" show-toolbar @cancel="onClose"-->
-<!--                  @confirm="onConfirm"></van-picker>-->
-<!--    </van-popup>-->
+
   </view>
 </template>
 
@@ -38,7 +36,7 @@ export default {
   },
 
   components: {
-    gradePicker, feedback
+    gradePicker, feedback,
   },
   props: {},
 
@@ -46,6 +44,13 @@ export default {
   },
 
   onShow() {
+    console.log(app.globalData)
+    const userInfo = app.globalData.userInfo
+    if (userInfo) {
+      const { grade, term } = userInfo
+      this.grade = grade
+      this.term = term
+    }
   },
 
   methods: {
