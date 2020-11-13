@@ -1,9 +1,9 @@
 {
   "pages": [
     {
-      "path": "pages/feedback/index",
+      "path": "pages/index/index",
       "style": {
-        "navigationBarTitleText": "反馈列表"
+        "enablePullDownRefresh": true
       }
     },
     {
@@ -13,11 +13,13 @@
       }
     },
     {
-      "path": "pages/index/index",
+      "path": "pages/feedback/index",
       "style": {
-        "enablePullDownRefresh": true
+        "navigationBarTitleText": "反馈列表"
       }
     },
+
+
 
 
     {
