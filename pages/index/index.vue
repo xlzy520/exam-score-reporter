@@ -56,10 +56,10 @@
 </template>
 
 <script>
-import { gradeColumn } from 'utils/enum'
-import api from 'utils/api'
+  import {gradeColumn} from 'utils/enum'
+  import api from 'utils/api'
 
-const app = getApp()
+  const app = getApp()
 
 export default {
   data() {
@@ -225,7 +225,9 @@ export default {
         data,
       }) => {
         if (data && data.length) {
-          app.globalData.userInfo = JSON.parse(data[0].rawData)
+          app.globalData.userInfo = data[0].userInfo || JSON.parse(data[0].rawData)
+          app.globalData.userInfo.grade = data[0].grade
+          app.globalData.userInfo.term = data[0].term
         }
         console.log(data)
       })
