@@ -99,7 +99,10 @@
       "van-empty": "/wxcomponents/vant/empty/index",
       "van-dialog": "/wxcomponents/vant/dialog/index",
       "van-dropdown-menu": "/wxcomponents/vant/dropdown-menu/index",
-      "van-dropdown-item": "/wxcomponents/vant/dropdown-item/index"
+      "van-dropdown-item": "/wxcomponents/vant/dropdown-item/index",
+      "van-tag": "/wxcomponents/vant/tag/index",
+      "van-radio": "/wxcomponents/vant/radio/index",
+      "van-radio-group": "/wxcomponents/vant/radio-group/index"
     }
   },
   "subPackages": []
