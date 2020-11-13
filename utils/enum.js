@@ -31,3 +31,8 @@ export const gradeAndTermColumn = [{
   className: 'column3',
 }
 ]
+
+export const issueTypeEnum = {
+  'req': '需求',
+  'bug': 'BUG'
+}
