@@ -11,6 +11,7 @@
 
     <van-cell is-link title="问题列表查看、问题反馈提交" icon="notes-o"
               link-type="navigateTo" url="/pages/feedback/index"></van-cell>
+    <van-cell is-link title="作者微信：13588043792" icon="user-o"></van-cell>
     <van-dialog title="标题" message="需要授权用户信息" :show="show"
                 show-cancel-button confirm-button-open-type="getUserInfo"
                 @close="onClose" @getuserinfo="getUserInfo" />
