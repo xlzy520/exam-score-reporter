@@ -1,14 +1,17 @@
 <template>
-  <view class="container">
+  <view class="container feedback">
     <van-cell v-for="report in reports"
               :key="report._id"
+              class="feedback-item"
               :label="getDate(report.createdTime)">
       <view slot="title" class="cell-header">
-        <van-tag type="danger" class="report-cell-tag">标签</van-tag>
-        <view class="van-cell-text">{{report.content}}</view>
+        <van-tag type="danger" class="report-cell-tag">{{getIssueType(report.issueType)}}</van-tag>
+        <view class="van-cell-text"
+              :class="report.type==='resolve'?'resolve': ''">{{report.content}}</view>
       </view>
     </van-cell>
-    <feedback />
+    <feedback @change="getFeedBackList" />
+    <view class="bottom"></view>
 
     <!--    <van-popup :show="show" position="bottom" @close="onClose">-->
     <!--      <van-picker :columns="columns" show-toolbar @cancel="onClose"-->
@@ -20,6 +23,7 @@
 <script>
 import feedback from 'components/feedback/index'
 import dayjs from 'dayjs'
+import {issueTypeEnum} from "../../utils/enum";
 
 const api = require('utils/api.js')
 
@@ -46,6 +50,9 @@ export default {
   },
 
   methods: {
+    getIssueType (val = 'bug'){
+      return issueTypeEnum[val]
+    },
     getDate(unix) {
       return dayjs(unix).format('YYYY年MM月DD日')
     },
@@ -113,6 +120,23 @@ export default {
 }
 </script>
 <style lang="scss">
+  .feedback{
+    padding-bottom: 60upx;
+    .feedback-item:last-child{
+      margin-bottom: 60upx;
+    }
+    .bottom{
+      margin-bottom: 120upx;
+      line-height: 1px;
+      height: 1px;
+    }
+  }
+  .feedback-item{
+
+  }
+  .resolve{
+    text-decoration: line-through;
+  }
   .report-btn {
     bottom: 60rpx;
     left: 30%;
