@@ -9,12 +9,18 @@
         @confirm="onConfirm" />
       <view class="change-log" v-if="popupType === 'changelog'">
         <view class="title">更新日志</view>
-        <view class="version">当前版本: 1.1.1</view>
+        <view class="version">当前版本: 1.1.2</view>
+        <view class="change-log-content">
+          <view class="changelog-item">1. 修复一直提示填写考试名称</view>
+          <view class="changelog-item">2. 增加小学、大学可选项</view>
+          <view class="changelog-item">3. 增加问题反馈列表</view>
+          <view class="changelog-item">点击弹窗外关闭</view>
+        </view>
+        <view class="version">版本: 1.1.1</view>
         <view class="change-log-content">
           <view class="changelog-item">1. 完善可视化页面,增加了三个图表</view>
           <view class="changelog-item">2. 完善成绩对比页面，可以选择任意两次考试</view>
           <view class="changelog-item">3. "我的"页面增加提交反馈入口，可以说出你的意见</view>
-          <view class="changelog-item">点击弹窗外关闭</view>
         </view>
       </view>
     </van-popup>
@@ -91,8 +97,9 @@ export default {
       this.onGetOpenid()
     }
     const version = wx.getStorageSync('version')
-    if (version !== '1.1.1') {
-      wx.setStorageSync('version', '1.1.1')
+    console.log(version);
+    if (version !== '1.1.2') {
+      wx.setStorageSync('version', '1.1.2')
       this.popupType = 'changelog'
       this.show = true
       // this.changeLogShow = true
@@ -284,7 +291,7 @@ export default {
   }
 
   .change-log{
-    min-height: 65vh;
+    height: 65vh;
     padding: 60upx;
     &-content{
       .changelog-item{
