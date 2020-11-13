@@ -195,7 +195,7 @@ export default {
         examDate,
         examName,
         subjectId,
-      } = this
+      } = this.reportData
       const subjects = [...this.reportData.subjects]
 
       if (!examName) {
