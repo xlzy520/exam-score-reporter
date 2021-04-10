@@ -1,28 +1,6 @@
 @import "~uview-ui/index.scss";
 @import "layout";
 
-.confirm-btn {
-  font-size: 32upx;
-  height: 88rpx;
-  line-height: 88rpx;
-  .u-size-default, &.u-size-default{
-    color: #fff!important;
-    border-radius: 88rpx;
-    background: linear-gradient(to right, #52D1FF 0%, #5C77FF 100%);
-    &::after{
-      border: none!important;
-    }
-  }
-}
-
-
-page {
-  background: #f6f6f6;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-}
-page{background:#F2F2F2;width: 750upx;overflow-x: hidden;}
 .qiun-padding{padding:2%; width:96%;}
 .qiun-wrap{display:flex; flex-wrap:wrap;}
 .qiun-rows{display:flex; flex-direction:row !important;}
@@ -42,41 +20,43 @@ page{background:#F2F2F2;width: 750upx;overflow-x: hidden;}
 .fixed {
   position: fixed;
 }
-/**app.wxss**/
 .container {
   display: flex;
   flex-direction: column;
-  /*align-items: center;*/
   box-sizing: border-box;
-}
-
-button {
-  background: initial;
-}
-
-button:focus{
-  outline: 0;
-}
-
-button::after{
-  border: none;
-}
-
-page {
-  background: #f6f6f6;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-}
-
-.df{
-  display: flex;
-}
-.flex-center{
-  align-items: center;
 }
 
 .padding-btn{
   display: block;
   padding: 15rpx 30rpx;
 }
+
+
+.btn{
+  font-size: 32upx;
+  height: 88rpx;
+  line-height: 88rpx;
+  .u-size-default, &.u-size-default{
+    color: #fff!important;
+    border-radius: 88upx;
+    margin-top: 30upx;
+    &::after{
+      border: none!important;
+    }
+  }
+}
+
+
+.confirm-btn {
+  .u-size-default, &.u-size-default{
+    background: linear-gradient(to right, #52D1FF 0%, #5C77FF 100%);
+  }
+}
+
+
+.normal-btn {
+  .u-size-default, &.u-size-default{
+    background-image: linear-gradient(120deg, #84fab0 0%, #8fd3f4 100%);
+  }
+}
+

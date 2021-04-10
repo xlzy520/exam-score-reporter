@@ -7,13 +7,14 @@ import divider from '@/components/divider'
 
 import App from './App'
 
-// import '@/style/tailwind.css'
-// import '@/style/index.scss'
+import '@/style/tailwind.css'
+import '@/style/index.scss'
 
 Vue.component('divider', divider)
 
 Vue.config.productionTip = false
 
+Vue.prototype.$version = '1.1.2'
 Vue.prototype.$rules = formRules
 
 Vue.prototype.$baseUrl = setting.baseUrl

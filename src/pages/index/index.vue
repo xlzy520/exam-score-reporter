@@ -1,22 +1,13 @@
 <template>
   <!--index.wxml-->
   <view class="container">
-    <u-popup v-model="changeLogVisible" mode="center">
-      <change-log />
-    </u-popup>
-    <u-cell-item title="年级" is-link :value="grade" arrow-direction="down"
-              @click="showPopup"></u-cell-item>
-    <u-popup v-model="show" mode="bottom">
-      <u-picker :columns="columns" :default-index="gradeIndex" show-toolbar
-                  v-if="popupType==='picker'" @cancel="onClose"
-                  @confirm="onConfirm"/>
-    </u-popup>
-    <u-cell-group v-for="(item, gradeIndex) in gradeColumn" :key="gradeIndex" :title="item">
-      <u-collapse :value="activeNames" @change="onChange">
+    <u-cell-item title="年级" is-link :value="grade" arrow-direction="down" @click="showGradeVisible"></u-cell-item>
+    <u-cell-group v-for="(item, gradeIndex) in gradeDataList" :key="gradeIndex" :title="item" class="grade-cell">
+      <u-collapse v-model="activeNames" class="grade-collapse">
         <u-collapse-item v-for="(group, index) in records[item]" :key="index"
                            :title="group.examDateText" :name="gradeIndex+'-'+index"
                            :value="group.examName">
-          <view class="action">
+          <view class="layout-slide mb-1">
             <u-button type="primary" size="mini" :data-record="group"
                         @tap="editRecord">前往编辑
             </u-button>
@@ -49,6 +40,24 @@
         </u-button>
       </u-empty>
     </view>
+    <u-popup v-model="changeLogVisible" mode="center">
+      <change-log />
+    </u-popup>
+    <u-popup v-model="gradeVisible" mode="bottom">
+      <view class="p-4 pb-10">
+        <u-checkbox-group :size="40" :label-size="40" width="33%" shape="circle"
+                          @change="checkboxGroupChange">
+          <u-checkbox v-model="item.checked" v-for="item in gradeColumns" :key="item.name"
+                      :name="item.name">{{item.name}}</u-checkbox>
+        </u-checkbox-group>
+        <view class="">
+          <u-button ripple class="btn normal-btn" @click="checkedAll">全选</u-button>
+          <u-button ripple class="btn confirm-btn" @click="changeShowGrade">确认</u-button>
+        </view>
+      </view>
+
+    </u-popup>
+
   </view>
 </template>
 
@@ -59,6 +68,8 @@ import api from 'utils/api'
 
 const app = getApp()
 
+const gradeColumns = gradeColumn.map(v => ({ name: v, checked: false }))
+
 export default {
   name: 'Home',
   components: {
@@ -67,9 +78,9 @@ export default {
   data() {
     return {
       changeLogVisible: false,
-      show: false,
-      columns: ['全部', ...gradeColumn],
-      gradeColumn: [],
+      gradeVisible: false,
+      gradeColumns,
+      gradeDataList: [],
       grade: '全部',
       gradeIndex: 0,
       popupType: 'subject',
@@ -87,15 +98,16 @@ export default {
 
   onLoad() {
     // 获取用户信息
-    this.gradeIndex = this.columns.findIndex(value => value === this.grade) || 0
+    this.gradeIndex = this.gradeColumns.findIndex(value => value === this.grade) || 0
     if (!app.globalData.openid) {
       this.onGetOpenid()
     }
     const version = wx.getStorageSync('version')
+    const curVersion = this.$version
     console.log(version)
-    if (version !== '1.1.2') {
-      wx.setStorageSync('version', '1.1.2')
-      this.show = true
+    if (version !== curVersion) {
+      wx.setStorageSync('version', curVersion)
+      this.changeLogVisible = true
     }
   },
   onShow() {
@@ -107,6 +119,18 @@ export default {
   },
 
   methods: {
+    checkboxGroupChange(e) {
+      console.log(e)
+    },
+    // 全选
+    checkedAll() {
+      this.gradeColumns.forEach(val => {
+        val.checked = !val.checked
+      })
+    },
+    showGradeVisible() {
+      this.gradeVisible = true
+    },
     showPopup() {
       this.show = true
       this.popupType = 'picker'
@@ -116,7 +140,7 @@ export default {
       this.show = false
     },
 
-    onConfirm(event) {
+    changeShowGrade(event) {
       const {
         value,
       } = event.detail
@@ -209,7 +233,7 @@ export default {
         })
         const sortColumn = Object.keys(result).sort((a, b) => gradeMap[a] - gradeMap[b])
         this.records = result
-        this.gradeColumn = sortColumn
+        this.gradeDataList = sortColumn
         console.log(data)
       }).finally(() => {
         uni.stopPullDownRefresh()
@@ -250,37 +274,42 @@ export default {
   },
 }
 </script>
-<style lang="scss">
-/**index.wxss**/
-
-page {
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-start;
-  background: #f6f6f6;
+<style lang="scss" scoped>
+.grade-collapse{
+  ::v-deep .u-collapse-item{
+    padding: 10upx 30upx;
+    border-bottom: 1upx solid #E4E4E4;
+  }
 }
 
 .subject-score .u-grid-item__text {
   color: hotpink;
-  font-size: 40 rpx;
-}
-
-.fixed {
-  position: fixed;
+  font-size: 40upx;
 }
 
 .compare-btn {
-  bottom: 60 rpx;
+  bottom: 60upx;
   left: 30%;
   right: 30%;
   margin: auto;
 }
 
-.action {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 10 rpx;
+.grade-cell{
+  ::v-deep .u-cell-title{
+    font-size: 32upx;
+    font-weight: bold;
+    padding-bottom: 30upx;
+    &::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      width: 8rpx;
+      height: 125rpx;
+      border-radius: 6rpx;
+      background: #39D5E3;
+      transform: translateY(-25%);
+    }
+  }
 }
 
 </style>
