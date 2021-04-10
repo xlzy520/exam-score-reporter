@@ -1,5 +1,7 @@
 # 中学生考试成绩记录小程序
-给妹妹做的一个记录每次考试的成绩小程序，以便于知道每次考试的详细情况。
+给妹妹做的一个记录每次考试的成绩小程序，以便于知道每次考试的详细情况。基于
+[uniapp-tailwind-uview-starter](https://github.com/xlzy520/uniapp-tailwind-uview-starter)
+
 
 
 ### changeLog

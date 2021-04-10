@@ -1,6 +1,0 @@
-<view class="container">
-  <van-empty image="../../../../images/zaizuole.jpg" description="在做了，在做了" />
-  <view>
-    可以选择相同考试科目的两次考试成绩进行各项数据的比较。
-  </view>
-</view>

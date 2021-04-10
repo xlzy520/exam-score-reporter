@@ -1,6 +1,0 @@
-{
-  "navigationBarTitleText": "添加课程信息",
-  "usingComponents": {
-    "gradePicker": "/components/gradePicker/index"
-  }
-}

@@ -25,21 +25,17 @@ module.exports = {
   ],
   rules: {
     'arrow-parens': 'off',
+    'no-tabs': 'off',
     complexity: ['error', 10],
     'global-require': 'off',
     'handle-callback-err': [
       'error',
       '^(err|error)$'
     ],
-    'import/no-unresolved': [
-      'error',
-      {
-        caseSensitive: true,
-        commonjs: true,
-        ignore: ['^[^.]'],
-      }
-    ],
     'import/prefer-default-export': 'off',
+    'import/no-extraneous-dependencies': 'off',
+    'import/extensions': 'off',
+    'import/no-unresolved': 'off',
     'linebreak-style': 'off',
     'no-catch-shadow': 'error',
     'no-continue': 'off',
@@ -106,5 +102,6 @@ module.exports = {
     wx: true,
     worker: true,
     getApp: true,
+    uni: true,
   },
 }
