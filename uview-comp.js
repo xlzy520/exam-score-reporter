@@ -38,6 +38,8 @@ import UDropDown from 'uview-ui/components/u-dropdown/u-dropdown'
 import UDropDownItem from 'uview-ui/components/u-dropdown-item/u-dropdown-item'
 import UCircleProgress from 'uview-ui/components/u-circle-progress/u-circle-progress'
 import UModal from 'uview-ui/components/u-modal/u-modal'
+import UCheckboxGroup from 'uview-ui/components/u-checkbox-group/u-checkbox-group'
+import UCheckbox from 'uview-ui/components/u-checkbox/u-checkbox'
 
 Vue.component('u-upload', UUpload)
 Vue.component('u-row', URow)
@@ -77,3 +79,5 @@ Vue.component('u-dropdown', UDropDown)
 Vue.component('u-dropdown-item', UDropDownItem)
 Vue.component('u-circle-progress', UCircleProgress)
 Vue.component('u-modal', UModal)
+Vue.component('u-checkbox-group', UCheckboxGroup)
+Vue.component('u-checkbox', UCheckbox)
