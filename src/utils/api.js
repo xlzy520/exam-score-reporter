@@ -8,6 +8,7 @@ const wxCloudCallFunction = (name, data) => new Promise((resolve, reject) => {
     }
   }).catch(err => {
     console.error(err)
+    uni.hideLoading()
     uni.showToast({
       icon: 'none',
       title: '操作失败',

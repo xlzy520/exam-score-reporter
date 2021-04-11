@@ -3,15 +3,14 @@
     <view class="userinfo">
       <open-data type="userAvatarUrl" class="userinfo-avatar"></open-data>
     </view>
-    <gradePicker title="我当前的年级" icon="location-o"
+    <gradePicker title="我当前的年级" icon="map"
                  :grade="grade" :term="term" @change="changeGrade"></gradePicker>
-   <u-cell-item is-link title="课程配置" icon="setting-o" link-type="navigateTo"
-              url="/pages/subjectSetting/index"></u-cell-item>
-<!--   <u-cell-item is-link title="问题反馈、需求提交" icon="notes-o" @click="feedBack"></u-cell-item>-->
-
-   <u-cell-item is-link title="问题列表查看、问题反馈提交" icon="notes-o"
-              link-type="navigateTo" url="/pages/feedback/index"></u-cell-item>
-   <u-cell-item is-link title="作者微信：13588043792" icon="user-o"></u-cell-item>
+   <u-cell-item title="课程配置" icon="setting"
+                @click="navTo('/pages/subjectSetting/index')"></u-cell-item>
+   <u-cell-item title="问题列表查看、问题反馈提交" icon="order"
+                @click="navTo('/pages/feedback/index')"></u-cell-item>
+   <u-cell-item :arrow="false" title="作者微信：13588043792(点击复制)" icon="account"
+                @click="copyWx"></u-cell-item>
 
     <u-modal title="标题" content="需要授权用户信息" v-model="show" show-cancel-button>
       <template slot="confirm-button">
@@ -24,9 +23,7 @@
 
 <script>
 import gradePicker from 'components/gradePicker/index.vue'
-import feedback from 'components/feedback/index'
-
-const api = require('utils/api.js')
+import { wxCloudCallFunction } from '@/utils/request'
 
 const app = getApp()
 
@@ -40,7 +37,7 @@ export default {
   },
 
   components: {
-    gradePicker, feedback,
+    gradePicker,
   },
   props: {},
 
@@ -58,6 +55,23 @@ export default {
   },
 
   methods: {
+    copyWx() {
+      uni.setClipboardData({
+        data: '13588043792', // 要复制的文字
+        success() {
+          uni.getClipboardData({
+            success() {
+              uni.showToast({
+                title: '复制微信成功',
+              })
+            },
+          })
+        },
+      })
+    },
+    navTo(url) {
+      uni.navigateTo({ url })
+    },
     onClose() {
       this.show = false
     },
@@ -67,7 +81,7 @@ export default {
         const detail = event.detail
         detail.userInfo.grade = this.grade
         detail.userInfo.term = this.term
-        api.wxCloudCallFunction('addUser', {
+        wxCloudCallFunction('addUser', {
           collectionName: 'users',
           ...detail,
         }).then(res => {
@@ -93,7 +107,7 @@ export default {
         grade,
         term,
       } = this
-      api.wxCloudCallFunction('update', {
+      wxCloudCallFunction('update', {
         collectionName: 'users',
         grade,
         term,
@@ -120,7 +134,7 @@ export default {
     background-position: 0 -128rpx;
     background-size: 750upx auto, 1500upx, auto;
     background-repeat: no-repeat;
-    background-color: #f8f8f8;
+    //background-color: #f8f8f8;
     color: #000;
 
     .userinfo {
