@@ -2,8 +2,7 @@
   <view class="container">
     <gradePicker title="年级" :grade="gradeData.grade" :term="gradeData.term"
                  @change="changeGrade"></gradePicker>
-    <LzPicker title="考试名" :value="currentExamData.examName"
-              :columns="columns" @change="changeExam"/>
+    <LzPicker title="考试名" :index="curExamIndex" :columns="columns" @change="changeExam"/>
 
     <view class="qiun-columns">
       <view class="qiun-bg-white qiun-title-bar qiun-common-mt">
@@ -57,12 +56,10 @@ import { wxCloudCallFunction } from '@/utils/request'
 export default {
   data() {
     return {
-      cWidth: '',
-      cHeight: '',
-      pixelRatio: 1,
       columns: [],
       examDataList: [],
       currentExamData: {},
+      curExamIndex: 0,
       chartData: {
         categories: [],
         series: [],
@@ -189,7 +186,7 @@ export default {
         ...this.gradeData,
       }).then(res => {
         this.examDataList = res.data
-        this.columns = res.data.map(v => ({ label: v.examName, value: v.examName, extra: v }))
+        this.columns = res.data.map((v, index) => ({ label: v.examName, value: index, extra: v }))
         this.changeGradeAndTermExamList()
         if (res.data.length) {
           this.currentExamData = this.examDataList[0]
@@ -204,8 +201,9 @@ export default {
     changeGrade(data) {
       this.gradeData = data
     },
-    changeExam({ extra }) {
+    changeExam({ value, extra }) {
       this.currentExamData = extra
+      this.curExamIndex = value
       this.changePieData()
     },
     changeGradeMenu(data = this.gradeData) {

@@ -2,8 +2,8 @@
 <view class="container">
   <gradePicker title="年级" :grade="gradeData.grade" :term="gradeData.term" only-grade
                @change="changeGrade"></gradePicker>
-  <LzPicker title="考试1" :value="examName1" :columns="columns" @change="changeExam1"/>
-  <LzPicker title="考试2" :value="examName2" :columns="columns" @change="changeExam2"/>
+  <LzPicker title="考试1" :index="examIndex1" :columns="columns" @change="changeExam1"/>
+  <LzPicker title="考试2" :index="examIndex2" :columns="columns" @change="changeExam2"/>
   <view class="qiun-columns" v-if="canCompare">
     <view class="qiun-bg-white qiun-title-bar qiun-common-mt">
       <view class="qiun-title-dot-light">成绩对比图</view>
@@ -31,8 +31,8 @@ import LzPicker from 'components/LzPicker/index.vue'
 export default {
   data() {
     return {
-      examName1: '',
-      examName2: '',
+      examIndex1: 0,
+      examIndex2: 1,
       columns: [],
       examDataList: [],
       chartData: {},
@@ -64,11 +64,11 @@ export default {
       this.getExamsList()
     },
     changeExam1(item) {
-      this.examName1 = item.value
+      this.examIndex1 = item.value
       this.showBaseLine()
     },
     changeExam2(item) {
-      this.examName2 = item.value
+      this.examIndex2 = item.value
       this.showBaseLine()
     },
     showBaseLine() {
@@ -76,9 +76,9 @@ export default {
       const average1 = this.examDataList[0].average
       const average2 = this.examDataList[1].average
       chartData.categories = this.examDataList[0].subjects.map(v => v.name)
-      chartData.series = [this.examName1, this.examName2].map((v, index) => ({
-        name: v,
-        data: this.examDataList[index].subjects.map(v => (Number(v.value))),
+      chartData.series = [this.examIndex1, this.examIndex2].map(v => ({
+        name: this.examDataList[v].examName,
+        data: this.examDataList[v].subjects.map(v => (Number(v.value))),
       }))
       this.chartData = chartData
       this.columnOpts = {
@@ -136,9 +136,9 @@ export default {
       }).then(res => {
         if (res.data.length > 1) {
           this.examDataList = res.data
-          this.columns = res.data.map(v => ({ label: v.examName, value: v.examName }))
-          this.examName1 = res.data[0].examName
-          this.examName2 = res.data[1].examName
+          this.columns = res.data.map((v, index) => ({ label: v.examName, value: index }))
+          // this.examName1 = res.data[0].examName
+          // this.examName2 = res.data[1].examName
           this.showBaseLine()
         } else {
           this.$showToast('考试次数不足两次，无法对比')
