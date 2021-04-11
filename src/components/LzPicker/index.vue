@@ -1,10 +1,8 @@
 <template>
   <view>
-    <u-cell-item :title="title" is-link :icon="icon" :value="value"
+    <u-cell-item :title="title" :icon="icon" :value="value"
               arrow-direction="down" @click="showPopup"></u-cell-item>
-    <u-popup :show="show" position="bottom" @close="onClose">
-      <u-picker :columns="columns" show-toolbar @cancel="onClose" @confirm="onConfirm" />
-    </u-popup>
+    <u-select v-model="show" :list="columns" @confirm="onConfirm"></u-select>
   </view>
 </template>
 
@@ -43,14 +41,9 @@ export default {
     showPopup() {
       this.show = true
     },
-
-    onClose() {
+    onConfirm(data) {
+      this.$emit('change', data[0])
       this.show = false
-    },
-
-    onConfirm(event) {
-      this.$emit('change', event.detail)
-      this.onClose()
     },
 
   },
