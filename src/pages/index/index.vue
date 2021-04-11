@@ -29,11 +29,11 @@
         </u-collapse-item>
       </u-collapse>
     </u-cell-group>
-    <view class="fixed compare-btn" v-if="records">
+    <view class="fixed compare-btn" v-if="showCompare">
       <u-button class="padding-btn" @click="goCompare" type="primary">成绩对比</u-button>
     </view>
-    <view v-if="records && !gradeDataList.length">
-      <u-empty text="暂无成绩记录">
+    <view v-if="!gradeDataList.length">
+      <u-empty text="当前条件下暂无成绩记录">
         <u-button slot="bottom" class="padding-btn" @click="goReport" type="primary">去记录我的成绩吧
         </u-button>
       </u-empty>
@@ -83,7 +83,7 @@ export default {
       showGradeText: ALL,
       activeNames: [],
       userInfo: {},
-      records: null,
+      records: {},
       valueStyle: {
         fontWeight: 500,
         color: '#1296db',
@@ -99,8 +99,9 @@ export default {
   },
 
   computed: {
-    name() {
-      return this.data
+    showCompare() {
+      const list = this.records[this.showGradeText]
+      return this.gradeDataList.length || (list && list.length > 1)
     },
   },
 
