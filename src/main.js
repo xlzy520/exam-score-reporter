@@ -3,10 +3,13 @@ import uView from 'uview-ui'
 import formRules from '@/utils/formRules'
 import setting from '@/setting'
 
+import gradePicker from '@/components/gradePicker/index.vue'
 import App from './App'
 
 import '@/style/tailwind.css'
 import '@/style/index.scss'
+
+Vue.component('gradePicker', gradePicker)
 
 Vue.config.productionTip = false
 

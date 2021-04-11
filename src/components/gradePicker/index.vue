@@ -9,8 +9,8 @@
                        shape="circle">
           <u-radio v-for="item in gradeColumn" :key="item" :name="item">{{item}}</u-radio>
         </u-radio-group>
-        <view class="group-title">学期</view>
-        <u-radio-group v-model="localTerm" :size="40" :label-size="40" width="33%"
+        <view class="group-title" v-if="!onlyGrade">学期</view>
+        <u-radio-group v-if="!onlyGrade" v-model="localTerm" :size="40" :label-size="40" width="33%"
                        shape="circle">
           <u-radio v-for="item in termColumn" :key="item" :name="item">{{item}}</u-radio>
         </u-radio-group>
@@ -57,9 +57,16 @@ export default {
       type: String,
       default: '上学期',
     },
+    onlyGrade: {
+      type: Boolean,
+      default: false,
+    },
   },
   computed: {
     currentGrade() {
+      if (this.onlyGrade) {
+        return this.grade
+      }
       return this.grade + `(${this.term})`
     },
   },
@@ -72,7 +79,11 @@ export default {
       this.show = true
     },
     submit() {
-      this.$emit('change', { grade: this.localGrade, term: this.localTerm })
+      const payload = { grade: this.localGrade, term: this.localTerm }
+      if (this.onlyGrade) {
+        delete payload.term
+      }
+      this.$emit('change', payload)
       this.show = false
     },
 
