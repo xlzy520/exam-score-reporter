@@ -12,9 +12,9 @@
    <u-cell-item :arrow="false" title="作者微信：13588043792(点击复制)" icon="account"
                 @click="copyWx"></u-cell-item>
 
-    <u-modal title="标题" content="需要授权用户信息" v-model="show" show-cancel-button>
-      <template slot="confirm-button">
-        <u-button open-type="getUserInfo" @click="getUserInfo">确定</u-button>
+    <u-modal title="提示" content="需要授权用户信息,用于存储数据" v-model="show">
+      <template class="px-2" slot="confirm-button">
+        <u-button type="primary" open-type="getUserInfo" @getuserinfo="getUserInfo">确定</u-button>
       </template>
     </u-modal>
 
@@ -45,7 +45,6 @@ export default {
   },
 
   onShow() {
-    console.log(app.globalData)
     const userInfo = app.globalData.userInfo
     if (userInfo) {
       const { grade, term } = userInfo
@@ -77,6 +76,7 @@ export default {
     },
 
     getUserInfo(event) {
+      this.show = false
       if (!app.globalData.userInfo) {
         const detail = event.detail
         detail.userInfo.grade = this.grade
@@ -91,8 +91,8 @@ export default {
       }
     },
 
-    changeGrade(evt) {
-      const [grade, term] = evt.detail
+    changeGrade(data) {
+      const { grade, term } = data
       this.grade = grade
       this.term = term
       if (!app.globalData.userInfo) {
@@ -118,10 +118,6 @@ export default {
           title: '修改成功',
         })
       })
-    },
-
-    feedBack() {
-      console.log(222)
     },
   },
 }
