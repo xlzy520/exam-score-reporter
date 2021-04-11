@@ -2,62 +2,53 @@
 <view class="container">
   <gradePicker title="年级" :grade="reportData.grade" :term="reportData.term"
                @change="changeGrade"></gradePicker>
-  <u-popup :show="show" position="bottom" @close="onClose">
-<!--    <u-datetime-picker type="date" :value="reportData.examDate" @input="onInputDate"-->
-<!--                         :formatter="formatter"-->
-<!--                         @cancel="onClose"-->
-<!--                         @confirm="onConfirmDate" />-->
-  </u-popup>
-  <u-cell-group title="考试信息">
-    <u-field :value="reportData.examName" @change="evt=>changeData(evt, 'examName')"
-               label="考试名称" auto-focus placeholder="请输入考试名称" />
-
-   <u-cell-item title="考试日期" is-link :value="reportData.examDateText"
+  <u-cell-group title="考试信息" class="lzy-cell-group">
+    <u-field v-model="reportData.examName" label="考试名称" maxlength="12" focus
+             placeholder="请输入考试名称" />
+    <u-cell-item title="考试日期" :value="reportData.examDateText"
               arrow-direction="down" @click="showDatePopup"></u-cell-item>
-    <u-picker mode="time" v-model="show" :params="params"></u-picker>
+    <u-picker mode="time" v-model="show" :params="params" @confirm="changeDate"></u-picker>
   </u-cell-group>
 
-  <u-cell-group title="排名信息">
-    <u-field :value="reportData.rankClass" @change="evt=>changeData(evt, 'rankClass')"
-               label="班级排名" type="number" placeholder="请输入班级排名"></u-field>
-    <u-field :value="reportData.rankGrade" @change="evt=>changeData(evt, 'rankGrade')"
-               label="年级排名" type="number" placeholder="请输入年级排名"></u-field>
+  <u-cell-group title="排名信息" class="lzy-cell-group">
+    <u-field v-model="reportData.rankClass" label="班级排名" maxlength="3" type="number"
+             placeholder="请输入班级排名"></u-field>
+    <u-field v-model="reportData.rankGrade" label="年级排名" maxlength="5" type="number"
+             placeholder="请输入年级排名"></u-field>
 
   </u-cell-group>
 
-  <u-cell-group title="科目信息">
+  <u-cell-group title="科目信息" class="lzy-cell-group">
     <u-field v-for="(item, index) in reportData.subjects" :key="item.name"
                :value="item.value" :label="item.name" maxlength="5"
-               :placeholder="'本次' + item.name + '得分'"
-               :error="subjectErrors[index]" type="digit"
-               @change="evt=>changeSubjectFullScore(evt, index)">
+               :placeholder="'本次' + item.name + '得分'" type="digit"
+               @input="val=>changeSubjectFullScore(val, index)">
       <view slot="right-icon">({{item.full}}分)</view>
     </u-field>
-    <view class="df no-subject">
+    <view class="flex no-subject">
       <view class="no-subject-text">没有我的课程？</view>
       <view class="no-subject-btn" @tap="goConfig">去配置</view>
     </view>
   </u-cell-group>
-  <u-cell-group :title="'总分 (' + total + ')'" class="total-score">
-    <u-circle-progress :value="reportData.rate" layer-color="#f6f6f6"
+  <u-cell-group :title="'总分 (' + total + ')'" class="total-score lzy-cell-group">
+    <u-circle-progress :percent="reportData.rate" layer-color="#f6f6f6"
                 stroke-width="6" :color="gradientColor">
       得分 {{reportData.score}}
     </u-circle-progress>
   </u-cell-group>
-  <u-cell-group title="统计">
-     <u-cell-item title="平均分" :value="reportData.average"></u-cell-item>
-<!--     <u-cell-item title="不及格科目" value="{{average}}" />-->
+  <u-cell-group title="统计" class="lzy-cell-group">
+     <u-cell-item title="平均分" :value="reportData.average" :arrow="false"></u-cell-item>
+     <u-cell-item title="最高分" :value="maxScore" :arrow="false"></u-cell-item>
+     <u-cell-item title="最低分" :value="minScore" :arrow="false"></u-cell-item>
   </u-cell-group>
 
-  <u-button class="padding-btn" block round open-type="getUserInfo"
-              :loading="loading" loading-type="spinner"
-              :loading-text="loadingText + '中'" type="danger"
-              @tap="submit" @getuserinfo="getUserInfo">
-    {{subjectId ? '更新': '保存'}}
-  </u-button>
-  <u-button class="padding-btn" block round
-              @tap="reset" type="info">重置</u-button>
-
+  <view class="pb-3">
+    <u-button class="btn confirm-btn padding-btn" open-type="getUserInfo" :loading="loading"
+              ripple @click="submit" @getuserinfo="getUserInfo">
+      {{subjectId ? '更新': '保存'}}
+    </u-button>
+    <u-button class="btn normal-btn padding-btn" ripple @click="reset" type="info">重置</u-button>
+  </view>
 
 </view>
 </template>
@@ -65,9 +56,8 @@
 <script>
 import dayjs from 'dayjs'
 import gradePicker from 'components/gradePicker/index.vue'
-import { defaultSubjects, gradeColumn } from '../../utils/enum'
-
-const api = require('../../utils/api.js')
+import {defaultSubjects, gradeColumn} from '@/utils/enum'
+import {wxCloudCallFunction} from '@/utils/request'
 
 const app = getApp()
 const defaultReportData = {
@@ -90,29 +80,26 @@ export default {
       show: false,
       reportData: defaultReportData,
       columns: gradeColumn,
-      popupType: 'subject',
-      subjectErrors: [],
       subjectId: '',
       loading: false,
-      loadingText: '',
-      gradientColor: {
-        '0%': '#3fecff',
-        '100%': '#6149f6',
-      },
-
+      // gradientColor: {
+      //   '0%': '#3fecff',
+      //   '100%': '#6149f6',
+      // },
       params: {
         year: true,
         month: true,
         day: true,
-      }
+        timestamp: true,
+      },
+      maxScore: '',
+      minScore: '',
     }
   },
 
   components: {
     gradePicker,
   },
-  props: {},
-
   onLoad() {
 
   },
@@ -126,10 +113,6 @@ export default {
       this.getSubject()
     }
   },
-
-  onHide() { // this.reset()
-  },
-
   computed: {
     total() {
       return this.reportData.subjects.reduce((pre, cur) => Number(cur.full) + pre, 0)
@@ -137,65 +120,38 @@ export default {
   },
 
   methods: {
-    formatter(type, value) {
-      if (type === 'year') {
-        return `${value}年`
-      } else if (type === 'month') {
-        return `${value}月`
-      }
-
-      return value
-    },
-
-    changeData({ detail }, key) {
-      this.reportData[key] = detail
-    },
-
     showDatePopup() {
       this.show = true
     },
-
-    onClose() {
-      this.show = false
-    },
-
-    changeGrade(evt) {
-      const [grade, term] = evt.detail
+    changeGrade({ grade, term }) {
       this.reportData.grade = grade
       this.reportData.term = term
       this.getSubject()
     },
 
-    onConfirmDate(event) {
-      const value = event.detail
-      this.reportData.examDate = value
-      this.reportData.examDateText = dayjs(value).format('YYYY-MM-DD')
-      this.onClose()
+    changeDate({ timestamp }) {
+      const realTimestamp = timestamp * 1000
+      this.reportData.examDate = realTimestamp
+      this.reportData.examDateText = dayjs(realTimestamp).format('YYYY-MM-DD')
+      this.show = false
     },
-
-    onInputDate(event) {
-      this.reportData.examDate = event.detail
-    },
-
-    changeSubjectFullScore(evt, index) {
-      const value = evt.detail
+    changeSubjectFullScore(value, index) {
       const _subjects = [...this.reportData.subjects]
       const full = _subjects[index].full
 
-      if (value > parseInt(full)) {
-        Toast('不能超过满分')
-        this.reportData.subjects[index].value = 0
+      if (value > parseInt(full, 10)) {
+        this.$showToast('不能超过满分')
+        const preValue = this.reportData.subjects[index].value
+        _subjects[index].value = preValue.substring(0, String(full).length - 1)
       } else {
         _subjects[index].value = value
       }
 
       this.reportData.subjects = _subjects
-      this.subjectErrors = []
       this.computeTotalScores(_subjects)
     },
 
-    submit(e) {
-      let hasEmpty = false
+    submit() {
       const {
         examDate,
         examName,
@@ -204,64 +160,61 @@ export default {
       const subjects = [...this.reportData.subjects]
 
       if (!examName) {
-        hasEmpty = true
-        Toast('请输入考试名称')
+        this.$showToast('请输入考试名称')
         return
       }
-
       if (!examDate) {
-        hasEmpty = true
-        Toast('请输入考试日期')
+        this.$showToast('请输入考试日期')
+        return
+      }
+      const emptyTarget = subjects.find(v => !v.value || !v.value > 0)
+
+      if (emptyTarget) {
+        this.$showToast(emptyTarget.name + '为空')
         return
       }
 
-      const subjectErrors = subjects.map(v => {
-        if (!v.value || !v.value > 0) {
-          hasEmpty = true
-          return true
-        }
-
-        return false
-      })
-
-      if (hasEmpty) {
-        this.subjectErrors = subjectErrors
-        Toast('存在不合法的输入')
-        return
-      }
-
-      console.log(subjectId)
       const name = subjectId ? 'update' : 'add'
       const actionName = subjectId ? '更新' : '保存'
       this.loading = true
-      this.loadingText = actionName
       if (subjectId) {
         this.reportData._id = subjectId
       }
-
-      api.wxCloudCallFunction(name, {
+      uni.showLoading({
+        title: '数据提交中...',
+      })
+      wxCloudCallFunction(name, {
         collectionName: 'scores',
         ...this.reportData,
       }).then(res => {
-        Toast(actionName + '成功')
+        uni.showToast({ title: actionName + '成功' })
         this.reportData.subjectId = res._id
-        console.log(res)
       }).finally(() => {
+        uni.hideLoading()
         this.loading = false
       })
     },
 
     computeTotalScores(subjects) {
-      const score = subjects.reduce((pre, cur) => {
-        if (cur.value) {
-          return Number(cur.value) + pre
+      let minScore = 0
+      let maxScore = 0
+      const score = subjects.reduce((pre, { value }) => {
+        if (value) {
+          if (value > maxScore) {
+            maxScore = value
+          }
+          if (value < minScore) {
+            minScore = value
+          }
+          return Number(value) + pre
         }
-
         return pre
       }, 0)
-      console.log(score)
+      console.log(minScore, maxScore)
+      this.minScore = minScore
+      this.maxScore = maxScore
       this.reportData.score = score
-      this.reportData.rate = (score / this.total).toFixed(2) * 100
+      this.reportData.rate = ((score / this.total).toFixed(2)) * 100
       this.reportData.average = (score / subjects.length).toFixed(2)
     },
 
@@ -269,17 +222,16 @@ export default {
       uni.showLoading({
         title: '加载中',
       })
-      api.wxCloudCallFunction('findAll', {
+      wxCloudCallFunction('findAll', {
         collectionName: 'gradeSubject',
         grade: this.reportData.grade,
       }).then(({
         data,
       }) => {
         if (data && data.length) {
-          const subjects = data[0].subjects
-          this.reportData.subjects = subjects
+          this.reportData.subjects = data[0].subjects
         } else {
-          Toast('未查询到相关信息，使用默认课程信息')
+          this.$showToast('未查询到相关信息，使用默认课程信息')
           this.reportData.subjects = defaultSubjects
           this.subjectId = ''
         }
@@ -292,7 +244,7 @@ export default {
       uni.showLoading({
         title: '加载中',
       })
-      api.wxCloudCallFunction('findOne', {
+      wxCloudCallFunction('findOne', {
         collectionName: 'scores',
         _id: id,
       }).then(({
@@ -320,7 +272,7 @@ export default {
     getUserInfo(e) {
       if (!app.globalData.userInfo) {
         const detail = e.detail
-        api.wxCloudCallFunction('addUser', {
+        wxCloudCallFunction('addUser', {
           collectionName: 'users',
           ...detail,
         }).then(res => {
@@ -332,13 +284,7 @@ export default {
 
     reset() {
       this.subjectId = ''
-      this.subjectErrors = []
       this.reportData = defaultReportData
-      // for (const dataKey in defaultReportData) {
-      //   if (defaultReportData.hasOwnProperty(dataKey)) {
-      //     this[dataKey] = defaultReportData[dataKey]
-      //   }
-      // }
       this.setGradeTerm()
       this.getSubject()
     },
@@ -357,14 +303,7 @@ export default {
 
 <style lang="scss">
   .total-score{
-     .u-cell-group{
-      padding-top: 30rpx;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      background: #fff;
-    }
+    text-align: center;
   }
   .no-subject{
     font-size: 30rpx;
