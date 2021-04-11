@@ -1,7 +1,17 @@
 <template>
   <view class="change-log">
     <view class="title">更新日志</view>
-    <view class="version">当前版本: 1.1.2</view>
+    <view class="version">当前版本: 2.0.0</view>
+    <view class="change-log-content">
+      <view class="changelog-item">1. 整体代码重构</view>
+      <view class="changelog-item">2. 年级、学期选择重构</view>
+      <view class="changelog-item">3. 图表插件重构</view>
+      <view class="changelog-item">4. 图表增加雷达图</view>
+      <view class="changelog-item">5. 反馈列表优化</view>
+      <view class="changelog-item">6. 一些其他的优化</view>
+      <view class="changelog-item">点击弹窗外关闭</view>
+    </view>
+    <view class="version">版本: 1.1.2</view>
     <view class="change-log-content">
       <view class="changelog-item">1. 修复一直提示填写考试名称</view>
       <view class="changelog-item">2. 增加小学、大学可选项</view>

@@ -13,7 +13,7 @@ Vue.component('gradePicker', gradePicker)
 
 Vue.config.productionTip = false
 
-Vue.prototype.$version = '1.1.2'
+Vue.prototype.$version = '1.1.3'
 Vue.prototype.$rules = formRules
 
 Vue.prototype.$baseUrl = setting.baseUrl
