@@ -73,13 +73,13 @@ export default {
         issueType: this.issueType,
         systemInfo,
       }).then(res => {
-        uni.showToast({ title: '添加成功' })
+        uni.showToast({ title: '提交成功' })
         uni.requestSubscribeMessage({
           tmplIds: ['uuVKAXzVmts-7XV3Zpxej6KSI4Dpz9_798toTNCqk7U'],
 
         })
+        this.show = false
         this.$emit('change')
-        this.onClose()
       }).finally(() => {
         uni.hideLoading()
       })
