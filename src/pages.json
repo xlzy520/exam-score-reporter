@@ -10,21 +10,11 @@
       }
     },
     {
-      "path": "pages/my/index",
-      "style": {
-        "navigationBarTitleText": "我的"
-      }
-    },
-    {
       "path": "pages/feedback/index",
       "style": {
         "navigationBarTitleText": "反馈列表"
       }
     },
-
-
-
-
     {
       "path": "pages/compare/index",
       "style": {}
@@ -38,11 +28,18 @@
       "style": {}
     },
     {
+      "path": "pages/my/index",
+      "style": {
+        "navigationBarTitleText": "我的"
+      }
+    },
+    {
       "path": "pages/subjectSetting/index",
       "style": {
-        "navigationBarTitleText": "添加课程信息"
+        "navigationBarTitleText": "课程配置"
       }
     }
+
   ],
   "tabBar": {
     "color": "#919191",

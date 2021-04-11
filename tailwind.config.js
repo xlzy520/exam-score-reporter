@@ -3,7 +3,7 @@ const plugin = require('tailwindcss/plugin')
 module.exports = {
   darkMode: 'class',
   purge: {
-    content: ['./src/**/*.vue'],
+    content: ['./src/**/*.vue', './src/**/*.wxss'],
   },
   corePlugins: [
     process.env.UNI_PLATFORM === 'h5' ? 'preflight' : 'container',
@@ -153,7 +153,6 @@ module.exports = {
       process.env.UNI_PLATFORM !== 'h5'
         ? {
           0: '0upx',
-          px: '2upx',
           1: '8upx',
           2: '16upx',
           3: '24upx',

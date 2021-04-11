@@ -3,7 +3,7 @@
     <view class="fixed report-btn">
       <u-button class="padding-btn" @click="showPopup" type="primary">提交问题</u-button>
     </view>
-    <u-popup v-model="show" mode="bottom">
+    <u-popup v-model="show" mode="center">
       <view>
         <u-field label="内容：" class="feedback" v-model="content" type="textarea"
                  :autosize="{ minHeight: 150 }"
@@ -76,7 +76,9 @@ export default {
         uni.showToast({ title: '提交成功' })
         uni.requestSubscribeMessage({
           tmplIds: ['uuVKAXzVmts-7XV3Zpxej6KSI4Dpz9_798toTNCqk7U'],
-
+          success: (res) => {
+            console.log(res)
+          },
         })
         this.show = false
         this.$emit('change')
