@@ -73,6 +73,10 @@ export default {
   options: {
     styleIsolation: 'apply-shared',
   },
+  mounted() {
+    this.localGrade = this.grade
+    this.localTerm = this.term
+  },
 
   methods: {
     showPopup() {

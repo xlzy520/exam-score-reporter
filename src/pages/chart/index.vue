@@ -53,6 +53,8 @@
 import LzPicker from 'components/LzPicker/index.vue'
 import { wxCloudCallFunction } from '@/utils/request'
 
+const app = getApp()
+
 export default {
   data() {
     return {
@@ -129,9 +131,15 @@ export default {
   props: {},
 
   onLoad() {
-    this.getExamsList()
+    const userInfo = app.globalData.userInfo
+    if (userInfo) {
+      const { grade, term } = userInfo
+      this.changeGrade({ grade, term })
+    }
   },
+  onShow() {
 
+  },
   methods: {
     showBaseLine() {
       const scores = []
@@ -166,10 +174,8 @@ export default {
     },
     changePieData() {
       const Pie = { series: [] }
-      const Column = { series: [], categories: [] }
       Pie.series = this.currentExamData.subjects.map(s => ({ name: s.name + ':' + s.value, data: Number(s.value) }))
-      this.curExamPieData = { ...Pie }
-      this.showBaseLine('canvasBaseLine', Column)
+      this.curExamPieData = Pie
     },
     changeGradeAndTermExamList() {
       this.gradeAndTermExamList = this.examDataList.filter(
@@ -191,7 +197,10 @@ export default {
         if (res.data.length) {
           this.currentExamData = this.examDataList[0]
           this.changePieData()
+          this.showBaseLine()
           this.changeGradeMenu()
+        } else {
+          this.$showToast('此条件下暂无数据，请选择其他条件')
         }
         console.log(res.data)
       }).finally(() => {
@@ -200,15 +209,15 @@ export default {
     },
     changeGrade(data) {
       this.gradeData = data
+      this.getExamsList()
     },
     changeExam({ value, extra }) {
       this.currentExamData = extra
       this.curExamIndex = value
       this.changePieData()
+      this.showBaseLine()
     },
-    changeGradeMenu(data = this.gradeData) {
-      this.gradeData = data
-      this.changeGradeAndTermExamList()
+    changeGradeMenu() {
       this.chartData.categories = this.gradeAndTermExamList[0].subjects.map(v => v.name)
       this.chartData.series = this.gradeAndTermExamList.map(v => ({
         name: v.examName,

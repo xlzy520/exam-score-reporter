@@ -153,6 +153,7 @@ export default {
         } else {
           this.$showToast('未查询到相关信息，使用默认课程信息')
           this.subjectId = ''
+          this.subjects = defaultSubjects
         }
       }).finally(() => {
         uni.hideLoading()
