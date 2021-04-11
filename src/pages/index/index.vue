@@ -15,16 +15,17 @@
             <u-button type="error" size="mini" @click="deleteRecord(group)">删除
             </u-button>
           </view>
-          <u-grid column-num="3" class="subject-score">
-            <u-grid-item v-for="(subject, index2) in group.subjects" :key="index2"
-                           :text="subject.value">
-              <view slot="icon">{{ subject.name }}</view>
+          <u-grid :col="3" class="subject-score">
+            <u-grid-item v-for="subject in group.subjects" :key="subject.name">
+              <view class="text-2xl">{{ subject.name }}</view>
+              <view class="text-xl grid-text text-pink-500">{{ subject.value }}</view>
             </u-grid-item>
           </u-grid>
-          <u-cell-item title="总分" :value="group.score"></u-cell-item>
-          <u-cell-item title="平均分" :value="group.average"></u-cell-item>
-          <u-cell-item title="班级排名" :value="group.rankClass"></u-cell-item>
-          <u-cell-item title="年级排名" :value="group.rankGrade"></u-cell-item>
+          <u-cell-item v-for="cell in commonCells" :key="cell.name" :title="cell.name" :value="group[cell.value]"
+                       :arrow="false" :value-style="valueStyle"></u-cell-item>
+<!--          <u-cell-item title="平均分" :value="group.average" :arrow="false"></u-cell-item>-->
+<!--          <u-cell-item title="班级排名" :value="group.rankClass" :arrow="false"></u-cell-item>-->
+<!--          <u-cell-item title="年级排名" :value="group.rankGrade" :arrow="false"></u-cell-item>-->
         </u-collapse-item>
       </u-collapse>
     </u-cell-group>
@@ -77,17 +78,22 @@ export default {
       changeLogVisible: false,
       gradeVisible: false,
       gradeColumns,
-      checkedGrade: '',
-      // maxCheckGrade: 3,
       gradeDataList: [],
       showGradeText: ALL,
-      gradeIndex: 0,
-      popupType: 'subject',
-      activeNames: ['1'],
+      activeNames: [],
       userInfo: {},
       records: null,
-      changeLogShow: false,
-      changeLog: '',
+      valueStyle: {
+        fontWeight: 500,
+        color: '#1296db',
+        fontSize: '36rpx'
+      },
+      commonCells: [
+        { name: '总分', value: 'score'},
+        { name: '平均分', value: 'average'},
+        { name: '班级排名', value: 'rankClass'},
+        { name: '年级排名', value: 'rankGrade'},
+      ]
     }
   },
 
@@ -226,7 +232,7 @@ export default {
   },
   onLoad() {
     // 获取用户信息
-    this.gradeIndex = this.gradeColumns.findIndex(value => value === this.grade) || 0
+    // this.gradeIndex = this.gradeColumns.findIndex(value => value === this.grade) || 0
     if (!app.globalData.openid) {
       this.onGetOpenid()
     }
@@ -243,7 +249,7 @@ export default {
   },
 
   onPullDownRefresh() {
-    this.getRecordList(this.grade)
+    this.getRecordList()
   },
 }
 </script>
