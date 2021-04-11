@@ -4,7 +4,7 @@
     <u-cell-item title="年级" is-link :value="showGradeText" arrow-direction="down"
                  @click="showGradeVisible"></u-cell-item>
     <u-cell-group v-for="(item, gradeIndex) in gradeDataList" :key="gradeIndex" :title="item"
-                  class="grade-cell">
+                  class="lzy-cell-group">
       <u-collapse v-model="activeNames" class="grade-collapse">
         <u-collapse-item v-for="(group, index) in records[item]" :key="index"
                            :title="group.examDateText" :name="gradeIndex+'-'+index"
@@ -272,24 +272,6 @@ export default {
   right: 30%;
   margin: auto;
   z-index: 9999;
-}
-
-.grade-cell{
-  ::v-deep .u-cell-title{
-    font-size: 32upx;
-    font-weight: bold;
-    padding-bottom: 30upx;
-    &::before {
-      content: '';
-      position: absolute;
-      left: 0;
-      width: 8rpx;
-      height: 125rpx;
-      border-radius: 6rpx;
-      background: #39D5E3;
-      transform: translateY(-25%);
-    }
-  }
 }
 
 </style>

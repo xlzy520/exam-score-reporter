@@ -46,6 +46,23 @@
   }
 }
 
+.lzy-cell-group{
+  .u-cell-title{
+    font-size: 32upx;
+    font-weight: bold;
+    padding-bottom: 30upx!important;
+    &::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      width: 8rpx;
+      height: 125rpx;
+      border-radius: 6rpx;
+      background: #39D5E3;
+      transform: translateY(-25%);
+    }
+  }
+}
 
 .confirm-btn {
   .u-size-default, &.u-size-default{
