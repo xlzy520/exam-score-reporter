@@ -53,13 +53,7 @@
 <script>
 import LzPicker from 'components/LzPicker/index.vue'
 import { wxCloudCallFunction } from '@/utils/request'
-import gradePicker from '@/components/gradePicker/index.vue'
 
-let _self
-const canvasPie = null
-const canvasRadar = null
-const canvasSubejctLine = null
-const canvasBaseLine = null
 export default {
   data() {
     return {
@@ -68,7 +62,6 @@ export default {
       pixelRatio: 1,
       columns: [],
       examDataList: [],
-      // examSelectedIndex: 0,
       currentExamData: {},
       chartData: {
         categories: [],
@@ -134,7 +127,7 @@ export default {
   },
 
   components: {
-    LzPicker, gradePicker,
+    LzPicker,
   },
   props: {},
 
