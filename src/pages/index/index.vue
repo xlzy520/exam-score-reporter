@@ -38,7 +38,7 @@
         </u-button>
       </u-empty>
     </view>
-    <u-popup v-model="changeLogVisible" closeable mode="center">
+    <u-popup v-model="changeLogVisible" closeable mode="center" width="600">
       <change-log />
     </u-popup>
     <u-popup v-model="gradeVisible" closeable mode="bottom">
