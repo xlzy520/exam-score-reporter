@@ -7,8 +7,11 @@
                   class="lzy-cell-group">
       <u-collapse v-model="activeNames" class="grade-collapse">
         <u-collapse-item v-for="(group, index) in records[item]" :key="index"
-                           :title="group.examDateText" :name="gradeIndex+'-'+index"
-                           :value="group.examName">
+                         :name="gradeIndex+'-'+index">
+          <template slot="title" class="w-full layout-slide">
+            <view class="">{{group.examDateText}}</view>
+            <view class="mr-1">{{group.examName}}</view>
+          </template>
           <view class="layout-slide mb-1">
             <u-button type="primary" size="mini" @click="editRecord(group)">前往编辑
             </u-button>
@@ -21,11 +24,8 @@
               <view class="text-xl grid-text text-pink-500">{{ subject.value }}</view>
             </u-grid-item>
           </u-grid>
-          <u-cell-item v-for="cell in commonCells" :key="cell.name" :title="cell.name" :value="group[cell.value]"
-                       :arrow="false" :value-style="valueStyle"></u-cell-item>
-<!--          <u-cell-item title="平均分" :value="group.average" :arrow="false"></u-cell-item>-->
-<!--          <u-cell-item title="班级排名" :value="group.rankClass" :arrow="false"></u-cell-item>-->
-<!--          <u-cell-item title="年级排名" :value="group.rankGrade" :arrow="false"></u-cell-item>-->
+          <u-cell-item v-for="cell in commonCells" :key="cell.name" :title="cell.name"
+                       :value="group[cell.value]" :arrow="false" :value-style="valueStyle" />
         </u-collapse-item>
       </u-collapse>
     </u-cell-group>
@@ -43,9 +43,10 @@
     </u-popup>
     <u-popup v-model="gradeVisible" closeable mode="bottom">
       <view class="p-4 pb-10">
-        <u-radio-group v-model="showGradeText" :size="40" :label-size="40" width="33%" shape="circle"
-                          @change="gradeChange">
-          <u-radio v-for="item in gradeColumns" :key="item.name" :name="item.name">{{item.name}}</u-radio>
+        <u-radio-group v-model="showGradeText" :size="40" :label-size="40" width="33%"
+                       shape="circle" @change="gradeChange">
+          <u-radio v-for="item in gradeColumns" :key="item.name"
+                   :name="item.name">{{item.name}}</u-radio>
         </u-radio-group>
         <view class="">
           <u-button ripple class="btn normal-btn" @click="checkedAllGrade">选择全部</u-button>
@@ -86,14 +87,14 @@ export default {
       valueStyle: {
         fontWeight: 500,
         color: '#1296db',
-        fontSize: '36rpx'
+        fontSize: '36rpx',
       },
       commonCells: [
-        { name: '总分', value: 'score'},
-        { name: '平均分', value: 'average'},
-        { name: '班级排名', value: 'rankClass'},
-        { name: '年级排名', value: 'rankGrade'},
-      ]
+        { name: '总分', value: 'score' },
+        { name: '平均分', value: 'average' },
+        { name: '班级排名', value: 'rankClass' },
+        { name: '年级排名', value: 'rankGrade' }
+      ],
     }
   },
 
@@ -104,6 +105,9 @@ export default {
   },
 
   methods: {
+    getCollapseTitle(item) {
+      return `${item.examDateText}——(${item.examName})`
+    },
     gradeChange(val) {
       this.showGradeText = val
       this.changeShowGrade()
