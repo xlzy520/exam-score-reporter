@@ -1,49 +1,40 @@
 <template>
 <view class="container">
   <gradePicker title="年级" :grade="grade" :term="term" @change="changeGrade"></gradePicker>
-  <u-popup :show="show" position="bottom" @close="onClose">
-    <view>
-      <u-field :value="subjectName" @change="changeSubjectName"
-                 label="科目名称" auto-focus placeholder="请输入科目名称" />
-      <u-button class="padding-btn" block round @tap="addNewSubject" type="primary">
+  <u-popup v-model="show" mode="center">
+    <view class="p-4 w-64">
+      <u-field v-model="subjectName" label="科目名称" maxlength="6" focus placeholder="请输入科目名称" />
+      <u-button class="padding-btn" @click="addNewSubject" type="primary">
         提交
       </u-button>
     </view>
   </u-popup>
 
-  <u-cell-group title="科目信息及满分">
-    <u-field v-for="(item, index) in subjects"
-               :key="index" :value="item.full" :label="item.name"
-               maxlength="3" :placeholder="item.name + '满分'"
-               :error="subjectErrors[index]"
-               type="number" @change="evt=>changeSubjectFullScore(evt, index)">
-      <u-icon slot="right-icon" name="close" @tap="deleteSubject"></u-icon>
+  <u-cell-group title="科目信息及满分" class="lzy-cell-group">
+    <u-field v-for="(item, index) in subjects" :key="index" v-model="item.full" :label="item.name"
+               maxlength="3" :placeholder="'请输入'+item.name + '满分值'"
+               type="number">
+      <u-icon slot="right" name="close" @click="deleteSubject(index)"></u-icon>
     </u-field>
   </u-cell-group>
 
-  <u-button class="padding-btn" block round
-              @tap="showPopup"
-              color="linear-gradient(to right, #4bb0ff, #6149f6)">
-    <view class="df flex-center">
+  <u-button class="padding-btn" type="primary" plain ripple @click="showPopup">
+    <view class="layout-items-center">
       <u-icon name="plus"></u-icon>
       增加科目信息
     </view>
   </u-button>
-  <u-button class="padding-btn" block round
-              @tap="submit" :loading="loading" loading-type="spinner"
-              :loading-text="loadingText + '中'" type="danger">
+  <u-button class="padding-btn" @click="submit" :loading="loading" type="primary">
     {{subjectId ? '更新': '保存'}}
   </u-button>
-
 
 </view>
 </template>
 
 <script>
-import { defaultSubjects, gradeColumn } from '../../utils/enum'
-import gradePicker from '../../components/gradePicker/index.vue'
-
-const api = require('../../utils/api.js')
+import { wxCloudCallFunction } from '@/utils/request'
+import { defaultSubjects, gradeColumn } from '@/utils/enum'
+import gradePicker from '@/components/gradePicker/index.vue'
 
 const app = getApp()
 
@@ -55,11 +46,9 @@ export default {
       grade: '初三',
       term: '上学期',
       subjects: defaultSubjects,
-      subjectErrors: [],
       subjectName: '',
       subjectId: '',
       loading: false,
-      loadingText: '',
     }
   },
 
@@ -74,16 +63,9 @@ export default {
   },
 
   methods: {
-    changeSubjectName(evt) {
-      this.subjectName = evt.detail
-    },
     showPopup() {
       this.show = true
     },
-    onClose() {
-      this.show = false
-    },
-
     changeGrade(evt) {
       const [grade, term] = evt.detail
       this.grade = grade
@@ -95,63 +77,49 @@ export default {
       const subjectName = this.subjectName
 
       if (!subjectName) {
-        Toast('科目名称不能为空')
+        this.$showToast('科目名称不能为空')
         return
       }
-
+      const target = this.subjects.find(v => v.name === subjectName)
+      if (target) {
+        this.$showToast('已存在相同的科目名称')
+        return
+      }
       const _subjects = [...this.subjects]
       _subjects.push({
         name: subjectName,
         full: '',
       })
-      this.onClose()
+      this.show = false
       this.subjects = _subjects
       this.subjectName = ''
     },
 
-    deleteSubject(evt) {
-      const index = evt.target.dataset.index
+    deleteSubject(index) {
       const _subjects = [...this.subjects]
       _subjects.splice(index, 1)
       this.subjects = _subjects
     },
 
-    changeSubjectFullScore(evt, index) {
-      const value = evt.detail
-      const _subjects = [...this.subjects]
-      _subjects[index].full = value
-      this.subjects = _subjects
-      this.subjectErrors = []
-    },
-
     submit() {
       const subjects = [...this.subjects]
-      let hasEmpty = false
-      const subjectErrors = subjects.map(v => {
-        if (!v.full || !v.full > 0) {
-          hasEmpty = true
-          return true
-        }
-        return false
-      })
-
-      if (hasEmpty) {
-        this.subjectErrors = subjectErrors
-        Toast('存在不合法的输入')
+      const errSubject = subjects.find(v => !v.full || v.full <= 0)
+      if (errSubject) {
+        this.$showToast(`${errSubject.name}分值不能为空`)
         return
       }
 
       const name = this.subjectId ? 'update' : 'add'
       const actionName = this.subjectId ? '更新' : '保存'
       this.loading = true
-      this.loadingText = actionName
-      api.wxCloudCallFunction(name, {
+      wxCloudCallFunction(name, {
         collectionName: 'gradeSubject',
         grade: this.grade,
         subjects: this.subjects,
         term: this.term,
       }).then(res => {
-        Toast(actionName + '成功')
+        uni.showToast({ title: actionName + '成功' })
+
         this.subjectId = res._id
         console.log(res)
       }).finally(() => {
@@ -172,7 +140,7 @@ export default {
       uni.showLoading({
         title: '加载中',
       })
-      api.wxCloudCallFunction('findAll', {
+      wxCloudCallFunction('findAll', {
         collectionName: 'gradeSubject',
         grade: this.grade,
         term: this.term,
@@ -183,7 +151,7 @@ export default {
           this.subjects = data && data[0].subjects
           this.subjectId = data[0]._id
         } else {
-          Toast('未查询到相关信息，使用默认课程信息')
+          uni.showToast({ title: '未查询到相关信息，使用默认课程信息' })
           // this.subjects = defaultSubjects
           this.subjectId = ''
         }
@@ -195,6 +163,5 @@ export default {
   },
 }
 </script>
-<style>
-
+<style lang="scss">
 </style>
