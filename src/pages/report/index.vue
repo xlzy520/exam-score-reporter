@@ -103,10 +103,15 @@ export default {
   onLoad() {
 
   },
+  onHide(){
+    this.reset()
+  },
 
   onShow(e) {
+    console.log(e);
     const id = (e && e.id) || app.globalData.recordId || this.subjectId
     this.setGradeTerm()
+    // uni.showLoading({ title: '获取数据中...' })
     if (id) {
       this.getScores(id)
     } else {
@@ -155,8 +160,8 @@ export default {
       const {
         examDate,
         examName,
-        subjectId,
       } = this.reportData
+      const subjectId = this.reportData.subjectId || this.subjectId
       const subjects = [...this.reportData.subjects]
 
       if (!examName) {
@@ -199,14 +204,16 @@ export default {
       let minScore = subjects[0].value
       let maxScore = 0
       const score = subjects.reduce((pre, { value }) => {
-        if (value) {
-          if (value > maxScore) {
-            maxScore = value
+        const numValue = Number(value)
+        if (numValue) {
+          if (numValue > maxScore) {
+            maxScore = numValue
           }
-          if (value < minScore) {
-            minScore = value
+          console.log(value);
+          if (numValue < minScore) {
+            minScore = numValue
           }
-          return Number(value) + pre
+          return numValue + pre
         }
         return pre
       }, 0)
@@ -220,7 +227,7 @@ export default {
 
     getSubject() {
       uni.showLoading({
-        title: '加载中',
+        title: '加载中...',
       })
       wxCloudCallFunction('findAll', {
         collectionName: 'gradeSubject',
@@ -285,6 +292,8 @@ export default {
     reset() {
       this.subjectId = ''
       this.reportData = defaultReportData
+      this.minScore = 0
+      this.maxScore = 0
       this.setGradeTerm()
       this.getSubject()
     },
