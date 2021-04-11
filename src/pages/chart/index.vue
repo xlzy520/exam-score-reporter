@@ -228,10 +228,6 @@ export default {
 }
 </script>
 <style lang="scss">
-.charts-box{
-  @apply w-full;
-  height: 500upx;
-}
   .exam-menu{
     margin-top: 10upx;
   }

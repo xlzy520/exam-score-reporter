@@ -3,14 +3,10 @@ import uView from 'uview-ui'
 import formRules from '@/utils/formRules'
 import setting from '@/setting'
 
-import divider from '@/components/divider'
-
 import App from './App'
 
 import '@/style/tailwind.css'
 import '@/style/index.scss'
-
-Vue.component('divider', divider)
 
 Vue.config.productionTip = false
 
