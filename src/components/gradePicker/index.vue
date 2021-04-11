@@ -1,24 +1,41 @@
 <template>
   <view>
-   <u-cell-item :title="title" is-link :icon="icon" :value="currentGrade"
-              arrow-direction="down" @click="showPopup" />
-    <u-popup :show="show" position="bottom" @close="onClose">
-      <u-picker id="picker" :columns="originColumns" @change="change" show-toolbar
-                  @cancel="onClose" @confirm="onConfirm" />
+   <u-cell-item :title="title" :icon="icon" :value="currentGrade" arrow-direction="down"
+                @click="showPopup" />
+    <u-popup v-model="show" closeable mode="bottom">
+      <view class="p-4 pb-10">
+        <view class="group-title">年级</view>
+        <u-radio-group v-model="localGrade" :size="40" :label-size="40" width="33%"
+                       shape="circle">
+          <u-radio v-for="item in gradeColumn" :key="item" :name="item">{{item}}</u-radio>
+        </u-radio-group>
+        <view class="group-title">学期</view>
+        <u-radio-group v-model="localTerm" :size="40" :label-size="40" width="33%"
+                       shape="circle">
+          <u-radio v-for="item in termColumn" :key="item" :name="item">{{item}}</u-radio>
+        </u-radio-group>
+        <view class="">
+          <u-button ripple class="btn confirm-btn" @click="submit">确认</u-button>
+        </view>
+      </view>
+
     </u-popup>
   </view>
 </template>
 
 <script>
 import {
-  gradeAndTermColumn, gradeColumn, levelColumn, levelGradeEnum, levelIndex
-} from '../../utils/enum'
+  gradeColumn, termColumn
+} from '@/utils/enum'
 
 export default {
   data() {
     return {
       show: false,
-      originColumns: gradeAndTermColumn,
+      gradeColumn,
+      termColumn,
+      localGrade: this.grade,
+      localTerm: this.term,
     }
   },
 
@@ -51,50 +68,19 @@ export default {
   },
 
   methods: {
-    change(evt) {
-      const { picker, value, index } = evt.detail
-      picker.setColumnValues(1, levelGradeEnum[value[0]])
-    },
-    updateColumns() {
-      const picker = this.selectComponent('#picker')
-      const columns = JSON.parse(JSON.stringify(this.originColumns))
-      const gradeIndexInAll = gradeColumn.findIndex(f => f === this.grade)
-      const _levelIndex = levelIndex.findIndex(f => gradeIndexInAll <= f)
-      picker.setColumnIndex(0, _levelIndex)
-      const currentGradeArr = levelGradeEnum[levelColumn[_levelIndex]]
-      const grade = columns[1].values
-      const term = columns[2].values
-      const gradeIndex = currentGradeArr.findIndex(f => f === this.grade)
-      const termIndex = term.findIndex(f => f === this.term)
-      console.log(gradeIndexInAll, gradeIndex)
-
-      picker.setColumnIndex(1, gradeIndex)
-      picker.setColumnIndex(2, termIndex)
-      // columns[0].defaultIndex = _levelIndex
-      // columns[1].defaultIndex = gradeIndex
-      // columns[1].values = levelGradeEnum[levelColumn[_levelIndex]]
-      // columns[0].defaultIndex = grade.findIndex(f => f === this.grade)
-      // this.originColumns = columns
-    },
     showPopup() {
-      this.updateColumns()
       this.show = true
     },
-
-    onClose() {
+    submit() {
+      this.$emit('change', { grade: this.localGrade, term: this.localTerm })
       this.show = false
-    },
-
-    onConfirm(event) {
-      const {
-        value,
-      } = event.detail
-      console.log(value)
-      value.shift()
-      this.$emit('change', { detail: value })
-      this.onClose()
     },
 
   },
 }
 </script>
+<style lang="scss">
+.group-title{
+  @apply py-4 text-xl text-blue-400;
+}
+</style>

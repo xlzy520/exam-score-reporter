@@ -14,7 +14,7 @@
     <u-field v-for="(item, index) in subjects" :key="index" v-model="item.full" :label="item.name"
                maxlength="3" :placeholder="'请输入'+item.name + '满分值'"
                type="number">
-      <u-icon slot="right" name="close" @click="deleteSubject(index)"></u-icon>
+      <u-icon slot="right" name="close-circle" size="42" @click="deleteSubject(index)"></u-icon>
     </u-field>
   </u-cell-group>
 
@@ -66,8 +66,8 @@ export default {
     showPopup() {
       this.show = true
     },
-    changeGrade(evt) {
-      const [grade, term] = evt.detail
+    changeGrade(data) {
+      const { grade, term } = data
       this.grade = grade
       this.term = term
       this.getSubject()
@@ -151,8 +151,7 @@ export default {
           this.subjects = data && data[0].subjects
           this.subjectId = data[0]._id
         } else {
-          uni.showToast({ title: '未查询到相关信息，使用默认课程信息' })
-          // this.subjects = defaultSubjects
+          this.$showToast('未查询到相关信息，使用默认课程信息')
           this.subjectId = ''
         }
       }).finally(() => {
