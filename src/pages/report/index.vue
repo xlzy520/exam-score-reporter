@@ -92,8 +92,8 @@ export default {
         day: true,
         timestamp: true,
       },
-      maxScore: '',
-      minScore: '',
+      maxScore: 0,
+      minScore: 0,
     }
   },
 
@@ -196,7 +196,7 @@ export default {
     },
 
     computeTotalScores(subjects) {
-      let minScore = 0
+      let minScore = subjects[0].value
       let maxScore = 0
       const score = subjects.reduce((pre, { value }) => {
         if (value) {
