@@ -1,23 +1,21 @@
 <template>
   <view>
     <view class="fixed report-btn">
-      <u-button color="#7232dd" class="padding-btn" block round @tap="showPopup"
-                  type="danger">提交问题</u-button>
+      <u-button class="padding-btn" @click="showPopup" type="primary">提交问题</u-button>
     </view>
-    <u-popup :show="show" position="bottom" @close="onClose">
+    <u-popup v-model="show" mode="bottom">
       <view>
-        <u-field class="feedback" :value="content" @change="changeValue"
-                   type="textarea"  :autosize="{ minHeight: 50 }" auto-focus
-                   placeholder="请输入问题反馈或需求提交" />
-        <view class="issue-type">
+        <u-field label="内容：" class="feedback" v-model="content" type="textarea"
+                 :autosize="{ minHeight: 150 }"
+                 focus placeholder="请输入问题反馈或需求提交" />
+        <view class="layout-items-center issue-type">
           <view class="issue-type-title">问题类型： </view>
-          <u-radio-group :value="issueType" @change="changeIssueType"
-                           class="issue-type-radios">
+          <u-radio-group v-model="issueType" class="layout-around issue-type-radios">
             <u-radio name="bug">BUG</u-radio>
             <u-radio name="req">需求</u-radio>
           </u-radio-group>
         </view>
-        <u-button class="padding-btn" block round @tap="submit" type="primary">
+        <u-button class="padding-btn" @click="submit" type="primary">
           提交
         </u-button>
       </view>
@@ -27,7 +25,7 @@
 </template>
 
 <script>
-import api from 'utils/api.js'
+import { wxCloudCallFunction } from '@/utils/request'
 
 export default {
   data() {
@@ -60,36 +58,27 @@ export default {
         this.content = ''
       }, 300)
     },
-
-    onClose() {
-      this.show = false
-    },
-
-    changeValue(evt) {
-      this.content = evt.detail
-    },
-    changeIssueType(evt) {
-      console.log(evt)
-      this.issueType = evt.detail
-    },
     submit() {
       if (!this.content) {
-        Toast('内容不能为空')
+        uni.showToast({ title: '内容不能为空' })
         return
       }
       uni.showLoading({
         title: '提交中...',
       })
       const systemInfo = wx.getSystemInfoSync()
-      api.wxCloudCallFunction('add', {
+      wxCloudCallFunction('add', {
         collectionName: 'report',
         content: this.content,
         issueType: this.issueType,
         systemInfo,
       }).then(res => {
-        Toast('添加成功')
-        console.log(res)
-        this.$emit('change', event.detail)
+        uni.showToast({ title: '添加成功' })
+        uni.requestSubscribeMessage({
+          tmplIds: ['uuVKAXzVmts-7XV3Zpxej6KSI4Dpz9_798toTNCqk7U'],
+
+        })
+        this.$emit('change')
         this.onClose()
       }).finally(() => {
         uni.hideLoading()
@@ -104,8 +93,6 @@ export default {
     min-height: 200upx;
   }
   .issue-type{
-    display: flex;
-    align-items: center;
     padding: 0 30upx;
     &-title{
       font-size: 36upx;
@@ -115,10 +102,7 @@ export default {
     }
   }
   .issue-type-radios{
-    display: flex;
-    justify-content: space-around;
     height: 120upx;
-    align-items: center;
     flex-grow: 1;
   }
 </style>

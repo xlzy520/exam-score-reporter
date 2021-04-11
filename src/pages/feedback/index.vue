@@ -1,31 +1,25 @@
 <template>
   <view class="container feedback">
-   <u-cell-item v-for="report in reports"
-              :key="report._id"
-              class="feedback-item"
+   <u-cell-item v-for="report in reports" :key="report._id"
+              class="feedback-item" :arrow="false"
               :label="getDate(report.createdTime)">
       <view slot="title" class="cell-header">
-        <u-tag type="danger" class="report-cell-tag">{{getIssueType(report.issueType)}}</u-tag>
-        <view class="u-cell-text"
-              :class="report.type==='resolve'?'resolve': ''">{{report.content}}</view>
+        <u-tag :type="getTagType(report)" class="report-cell-tag"
+               :text="getIssueType(report.issueType)" />
+        <view :class="{'u-cell-text': true, resolve: report.type==='resolve'}">
+          {{report.content}}</view>
       </view>
     </u-cell-item>
     <feedback @change="getFeedBackList" />
     <view class="bottom"></view>
-
-    <!--    <u-popup :show="show" position="bottom" @close="onClose">-->
-    <!--      <u-picker :columns="columns" show-toolbar @cancel="onClose"-->
-    <!--                  @confirm="onConfirm"></u-picker>-->
-    <!--    </u-popup>-->
   </view>
 </template>
 
 <script>
 import feedback from 'components/feedback/index'
 import dayjs from 'dayjs'
-import {issueTypeEnum} from "../../utils/enum";
-
-const api = require('utils/api.js')
+import { wxCloudCallFunction } from '@/utils/request'
+import { issueTypeEnum } from '@/utils/enum'
 
 const app = getApp()
 
@@ -50,31 +44,30 @@ export default {
   },
 
   methods: {
-    getIssueType (val = 'bug'){
+    getIssueType(val = 'bug') {
       return issueTypeEnum[val]
+    },
+    getTagType(report) {
+      const issueType = report.issueType || 'bug'
+      return issueType === 'bug' ? 'error' : 'warning'
     },
     getDate(unix) {
       return dayjs(unix).format('YYYY年MM月DD日')
     },
     getFeedBackList() {
-      api.wxCloudCallFunction('findAllFeedback', {}).then(({ data }) => {
+      wxCloudCallFunction('findAllFeedback', {}).then(({ data }) => {
         if (data && data.length) {
           this.reports = data
-          console.log(data)
         }
         console.log(data)
       })
     },
-    onClose() {
-      this.show = false
-    },
-
     getUserInfo(event) {
       if (!app.globalData.userInfo) {
         const detail = event.detail
         detail.userInfo.grade = this.grade
         detail.userInfo.term = this.term
-        api.wxCloudCallFunction('addUser', {
+        wxCloudCallFunction('addUser', {
           collectionName: 'users',
           ...detail,
         }).then(res => {
@@ -100,7 +93,7 @@ export default {
         grade,
         term,
       } = this
-      api.wxCloudCallFunction('update', {
+      wxCloudCallFunction('update', {
         collectionName: 'users',
         grade,
         term,
@@ -142,6 +135,7 @@ export default {
     left: 30%;
     right: 30%;
     margin: auto;
+    z-index: 9999;
   }
   .cell-header{
     display: flex;
