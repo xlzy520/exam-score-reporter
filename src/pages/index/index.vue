@@ -1,18 +1,18 @@
 <template>
   <!--index.wxml-->
   <view class="container">
-    <u-cell-item title="年级" is-link :value="grade" arrow-direction="down" @click="showGradeVisible"></u-cell-item>
-    <u-cell-group v-for="(item, gradeIndex) in gradeDataList" :key="gradeIndex" :title="item" class="grade-cell">
+    <u-cell-item title="年级" is-link :value="showGradeText" arrow-direction="down"
+                 @click="showGradeVisible"></u-cell-item>
+    <u-cell-group v-for="(item, gradeIndex) in gradeDataList" :key="gradeIndex" :title="item"
+                  class="grade-cell">
       <u-collapse v-model="activeNames" class="grade-collapse">
         <u-collapse-item v-for="(group, index) in records[item]" :key="index"
                            :title="group.examDateText" :name="gradeIndex+'-'+index"
                            :value="group.examName">
           <view class="layout-slide mb-1">
-            <u-button type="primary" size="mini" :data-record="group"
-                        @tap="editRecord">前往编辑
+            <u-button type="primary" size="mini" @click="editRecord(group)">前往编辑
             </u-button>
-            <u-button type="danger" size="mini" :data-record="group"
-                        @tap="deleteRecord">删除
+            <u-button type="error" size="mini" @click="deleteRecord(group)">删除
             </u-button>
           </view>
           <u-grid column-num="3" class="subject-score">
@@ -29,30 +29,26 @@
       </u-collapse>
     </u-cell-group>
     <view class="fixed compare-btn" v-if="records">
-      <u-button color="#7232dd" class="padding-btn" block round @tap="goCompare"
-                  type="danger">成绩对比
-      </u-button>
+      <u-button class="padding-btn" @click="goCompare" type="primary">成绩对比</u-button>
     </view>
-    <view v-if="records && !gradeColumn.length">
-      <u-empty description="暂无成绩记录">
-        <u-button color="#7232dd" class="padding-btn" block round @tap="goReport"
-                    type="danger">去记录我的成绩吧
+    <view v-if="records && !gradeDataList.length">
+      <u-empty text="暂无成绩记录">
+        <u-button slot="bottom" class="padding-btn" @click="goReport" type="primary">去记录我的成绩吧
         </u-button>
       </u-empty>
     </view>
-    <u-popup v-model="changeLogVisible" mode="center">
+    <u-popup v-model="changeLogVisible" closeable mode="center">
       <change-log />
     </u-popup>
-    <u-popup v-model="gradeVisible" mode="bottom">
+    <u-popup v-model="gradeVisible" closeable mode="bottom">
       <view class="p-4 pb-10">
-        <u-checkbox-group :size="40" :label-size="40" width="33%" shape="circle"
-                          @change="checkboxGroupChange">
-          <u-checkbox v-model="item.checked" v-for="item in gradeColumns" :key="item.name"
-                      :name="item.name">{{item.name}}</u-checkbox>
-        </u-checkbox-group>
+        <u-radio-group v-model="showGradeText" :size="40" :label-size="40" width="33%" shape="circle"
+                          @change="gradeChange">
+          <u-radio v-for="item in gradeColumns" :key="item.name" :name="item.name">{{item.name}}</u-radio>
+        </u-radio-group>
         <view class="">
-          <u-button ripple class="btn normal-btn" @click="checkedAll">全选</u-button>
-          <u-button ripple class="btn confirm-btn" @click="changeShowGrade">确认</u-button>
+          <u-button ripple class="btn normal-btn" @click="checkedAllGrade">选择全部</u-button>
+<!--          <u-button ripple class="btn confirm-btn" @click="changeShowGrade">确认</u-button>-->
         </view>
       </view>
 
@@ -68,7 +64,8 @@ import api from 'utils/api'
 
 const app = getApp()
 
-const gradeColumns = gradeColumn.map(v => ({ name: v, checked: false }))
+const ALL = '全部'
+const gradeColumns = [ALL, ...gradeColumn].map(v => ({ name: v }))
 
 export default {
   name: 'Home',
@@ -80,115 +77,71 @@ export default {
       changeLogVisible: false,
       gradeVisible: false,
       gradeColumns,
+      checkedGrade: '',
+      // maxCheckGrade: 3,
       gradeDataList: [],
-      grade: '全部',
+      showGradeText: ALL,
       gradeIndex: 0,
       popupType: 'subject',
       activeNames: ['1'],
-      avatarUrl: '/static/pages/index/user-unlogin.png',
       userInfo: {},
-      logged: false,
-      takeSession: false,
-      requestResult: '',
       records: null,
       changeLogShow: false,
       changeLog: '',
     }
   },
 
-  onLoad() {
-    // 获取用户信息
-    this.gradeIndex = this.gradeColumns.findIndex(value => value === this.grade) || 0
-    if (!app.globalData.openid) {
-      this.onGetOpenid()
-    }
-    const version = wx.getStorageSync('version')
-    const curVersion = this.$version
-    console.log(version)
-    if (version !== curVersion) {
-      wx.setStorageSync('version', curVersion)
-      this.changeLogVisible = true
-    }
-  },
-  onShow() {
-    this.getRecordList()
-  },
-
-  onPullDownRefresh() {
-    this.getRecordList(this.grade)
+  computed: {
+    name() {
+      return this.data
+    },
   },
 
   methods: {
-    checkboxGroupChange(e) {
-      console.log(e)
+    gradeChange(val) {
+      this.showGradeText = val
+      this.changeShowGrade()
     },
-    // 全选
-    checkedAll() {
-      this.gradeColumns.forEach(val => {
-        val.checked = !val.checked
-      })
+    checkedAllGrade() {
+      this.showGradeText = ALL
+      this.changeShowGrade()
     },
     showGradeVisible() {
       this.gradeVisible = true
     },
-    showPopup() {
-      this.show = true
-      this.popupType = 'picker'
+    changeShowGrade() {
+      this.gradeVisible = false
+      this.getRecordList()
     },
-
-    onClose() {
-      this.show = false
-    },
-
-    changeShowGrade(event) {
-      const {
-        value,
-      } = event.detail
-      this.grade = value
-      this.show = false
-      this.getRecordList(value)
-    },
-
-    onChange(event) {
-      this.activeNames = event.detail
-    },
-
     goCompare() {
       uni.navigateTo({
         url: '/pages/compare/index',
       })
     },
-
     goReport() {
       uni.switchTab({
         url: '/pages/report/index',
       })
     },
 
-    editRecord(evt) {
-      const record = evt.target.dataset.record
-      const _id = record._id
-      app.globalData.recordId = _id
+    editRecord(record) {
+      app.globalData.recordId = record._id
       uni.switchTab({
         url: '/pages/report/index',
       })
-      console.log(evt)
     },
 
-    deleteRecord(evt) {
-      const record = evt.target.dataset.record
+    deleteRecord(record) {
       const id = record._id
       uni.showModal({
         title: '提示',
         content: '确认删除本条记录吗？',
         success: res => {
           if (res.confirm) {
-            console.log('用户点击确定')
             this.deleteRecordService(id)
           }
         },
       })
-      console.log(evt)
     },
 
     deleteRecordService(id) {
@@ -196,7 +149,6 @@ export default {
         collectionName: 'scores',
         _id: id,
       }).then(res => {
-        console.log(res)
         uni.showToast({
           title: '删除成功',
         })
@@ -204,7 +156,7 @@ export default {
       })
     },
 
-    getRecordList(grade) {
+    getRecordList(grade = this.showGradeText) {
       if (grade === '全部') {
         grade = undefined
       }
@@ -218,7 +170,7 @@ export default {
       }).then(({
         data,
       }) => {
-        app.globalData.openid = console.log()
+        // app.globalData.openid = console.log()
         const result = {}
         data.forEach(v => {
           if (!result[v.grade]) {
@@ -272,6 +224,27 @@ export default {
       })
     },
   },
+  onLoad() {
+    // 获取用户信息
+    this.gradeIndex = this.gradeColumns.findIndex(value => value === this.grade) || 0
+    if (!app.globalData.openid) {
+      this.onGetOpenid()
+    }
+    const version = wx.getStorageSync('version')
+    const curVersion = this.$version
+    console.log(version)
+    if (version !== curVersion) {
+      wx.setStorageSync('version', curVersion)
+      this.changeLogVisible = true
+    }
+  },
+  onShow() {
+    this.getRecordList()
+  },
+
+  onPullDownRefresh() {
+    this.getRecordList(this.grade)
+  },
 }
 </script>
 <style lang="scss" scoped>
@@ -292,6 +265,7 @@ export default {
   left: 30%;
   right: 30%;
   margin: auto;
+  z-index: 9999;
 }
 
 .grade-cell{
