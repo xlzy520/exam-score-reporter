@@ -21,14 +21,13 @@
   - 年级排名
 - 记录查看
   - 按年级分组查看
-  - 图表查看(未完成)
-  - 两次考试成绩对比(未完成)
+  - 图表查看
+  - 两次考试成绩对比
   
-### TODO
-1. 图表查看总成绩、排名或单科成绩的变化曲线
-2. 考试成绩对比(总成绩、排名或单科成绩)
-
 
 ### install
 1. 云函数文件存储在`static/cloudfunctions-tcb`中
 2. 云数据库表: `scores`，`gradeSubject`，`users`, `report`
+3. `yarn`或者`npm`安装依赖
+4. 具体参考[uniapp-tailwind-uview-starter](https://github.com/xlzy520/uniapp-tailwind-uview-starter)启动项目
+
