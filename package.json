@@ -65,7 +65,6 @@
     "dayjs": "^1.10.4",
     "flyio": "^0.6.2",
     "regenerator-runtime": "^0.12.1",
-    "uview": "^0.1.0",
     "uview-ui": "^1.8.4",
     "vue": "^2.6.11",
     "vuex": "^3.2.0"
@@ -84,6 +83,7 @@
     "@dcloudio/webpack-uni-pages-loader": "^2.0.0-31620210325001",
     "@vue/cli-plugin-babel": "~4.5.0",
     "@vue/cli-service": "~4.5.0",
+    "@fullhuman/postcss-purgecss": "3.0.0",
     "autoprefixer": "9.8.6",
     "babel-plugin-import": "^1.11.0",
     "cross-env": "^7.0.2",
