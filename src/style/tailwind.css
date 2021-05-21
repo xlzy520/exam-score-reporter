@@ -4,7 +4,7 @@
 
 @layer components {
   .page{
-    @apply min-h-300;
+    min-height: 300upx;
   }
 }
 
