@@ -1,6 +1,12 @@
 <template>
   <view class="change-log">
     <view class="title">更新日志</view>
+    <view class="version">当前版本: 2.0.2</view>
+    <view class="change-log-content">
+      <view class="changelog-item">1.修复学期数据不对</view>
+      <view class="changelog-item">2.修复成绩登记不能新增的问题</view>
+      <view class="changelog-item">3.修复学科配置问题</view>
+    </view>
     <view class="version">当前版本: 2.0.0</view>
     <view class="change-log-content">
       <view class="changelog-item">1. 整体代码重构</view>
