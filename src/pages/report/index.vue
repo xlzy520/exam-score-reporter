@@ -56,8 +56,8 @@
 <script>
 import dayjs from 'dayjs'
 import gradePicker from 'components/gradePicker/index.vue'
-import {defaultSubjects, gradeColumn} from '@/utils/enum'
-import {wxCloudCallFunction} from '@/utils/request'
+import { defaultSubjects, gradeColumn } from '@/utils/enum'
+import { wxCloudCallFunction } from '@/utils/request'
 
 const app = getApp()
 const defaultReportData = {
@@ -78,7 +78,7 @@ export default {
   data() {
     return {
       show: false,
-      reportData: defaultReportData,
+      reportData: { ...defaultReportData },
       columns: gradeColumn,
       subjectId: '',
       loading: false,
@@ -103,12 +103,12 @@ export default {
   onLoad() {
 
   },
-  onHide(){
+  onHide() {
     this.reset()
   },
 
   onShow(e) {
-    console.log(e);
+    console.log(e)
     const id = (e && e.id) || app.globalData.recordId || this.subjectId
     this.setGradeTerm()
     // uni.showLoading({ title: '获取数据中...' })
@@ -194,6 +194,9 @@ export default {
       }).then(res => {
         uni.showToast({ title: actionName + '成功' })
         this.reportData.subjectId = res._id
+        uni.switchTab({
+          url: '/pages/index/index',
+        })
       }).finally(() => {
         uni.hideLoading()
         this.loading = false
@@ -209,7 +212,7 @@ export default {
           if (numValue > maxScore) {
             maxScore = numValue
           }
-          console.log(value);
+          console.log(value)
           if (numValue < minScore) {
             minScore = numValue
           }
@@ -291,7 +294,8 @@ export default {
 
     reset() {
       this.subjectId = ''
-      this.reportData = defaultReportData
+      app.globalData.recordId = ''
+      this.reportData = { ...defaultReportData }
       this.minScore = 0
       this.maxScore = 0
       this.setGradeTerm()

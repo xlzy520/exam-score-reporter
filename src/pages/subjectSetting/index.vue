@@ -58,8 +58,8 @@ export default {
   props: {},
 
   onLoad() {
-    this.getSubject()
     this.setGradeTerm()
+    this.getSubject()
   },
 
   methods: {
@@ -67,6 +67,7 @@ export default {
       this.show = true
     },
     changeGrade(data) {
+      console.log(data);
       const { grade, term } = data
       this.grade = grade
       this.term = term

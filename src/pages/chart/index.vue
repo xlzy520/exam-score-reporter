@@ -97,9 +97,9 @@ export default {
           disableGrid: true,
         },
         yAxis: {
-          splitNumber: 5,
+          // splitNumber: 10,
           min: 0,
-          max: 150,
+          // max: 150,
         },
         extra: {
           line: {
@@ -112,9 +112,9 @@ export default {
           disableGrid: true,
         },
         yAxis: {
-          splitNumber: 5,
+          // splitNumber: 10,
           min: 0,
-          max: 150,
+          // max: 150,
         },
         extra: {
           line: {
@@ -131,14 +131,14 @@ export default {
   props: {},
 
   onLoad() {
+
+  },
+  onShow() {
     const userInfo = app.globalData.userInfo
     if (userInfo) {
       const { grade, term } = userInfo
       this.changeGrade({ grade, term })
     }
-  },
-  onShow() {
-
   },
   methods: {
     showBaseLine() {
