@@ -2,6 +2,11 @@
 给妹妹做的一个记录每次考试的成绩小程序，以便于知道每次考试的详细情况。基于
 [uniapp-tailwind-uview-starter](https://github.com/xlzy520/uniapp-tailwind-uview-starter)
 
+### GitHub
+[GitHub 项目地址](https://github.com/xlzy520/exam-score-reporter)
+
+### 小程序预览
+![](./mp-preview.jpg)
 
 
 ### changeLog
