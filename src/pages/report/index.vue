@@ -57,7 +57,7 @@
 import dayjs from 'dayjs'
 import gradePicker from 'components/gradePicker/index.vue'
 import { defaultSubjects, gradeColumn } from '@/utils/enum'
-import { wxCloudCallFunction } from '@/utils/request'
+import { wxCloudCallFunction} from '@/utils/request'
 
 const app = getApp()
 const defaultReportData = {
