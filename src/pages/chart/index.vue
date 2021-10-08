@@ -46,6 +46,7 @@
         <qiun-data-charts type="line" :opts="lineOpts" :chartData="chartData"/>
       </view>
     </view>
+    <ad unit-id="adunit-bd3191b355d39c3e" ad-type="video" ad-theme="white"></ad>
   </view>
 </template>
 

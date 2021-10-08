@@ -1,6 +1,7 @@
 <template>
   <!--index.wxml-->
   <view class="container">
+    <ad unit-id="adunit-77c950cb8413c3aa"></ad>
     <u-cell-item title="年级" is-link :value="showGradeText" arrow-direction="down"
                  @click="showGradeVisible"></u-cell-item>
     <u-cell-group v-for="(item, gradeIndex) in gradeDataList" :key="gradeIndex" :title="item"
