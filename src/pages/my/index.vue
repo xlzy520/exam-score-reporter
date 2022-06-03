@@ -11,7 +11,6 @@
                 @click="navTo('/pages/feedback/index')"></u-cell-item>
    <u-cell-item :arrow="false" title="作者微信：13588043792(点击复制)" icon="account"
                 @click="copyWx"></u-cell-item>
-    <ad unit-id="adunit-6f8d4aed4a0a57d6" ad-type="video" ad-theme="white"></ad>
 
     <u-modal title="提示" content="需要授权用户信息,用于存储数据" v-model="show">
       <template class="px-2" slot="confirm-button">
