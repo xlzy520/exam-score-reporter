@@ -16,3 +16,8 @@ yarn-error.log*
 .project
 .idea
 .vscode
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw*

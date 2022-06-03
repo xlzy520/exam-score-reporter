@@ -54,7 +54,8 @@
       "urlCheck" : false,
       "postcss" : true,
       "es6" : true,
-      "minified" : true
+      "minified" : true,
+      "compileHotReLoad": false
     },
     "usingComponents" : true,
     "cloudfunctionRoot": "./static/cloudfunctions-tcb/",

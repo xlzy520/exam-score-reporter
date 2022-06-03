@@ -7,6 +7,7 @@
     "enhance": true,
     "postcss": true,
     "preloadBackgroundData": false,
+    "compileHotReLoad": false,
     "minified": true,
     "newFeature": true,
     "coverView": true,

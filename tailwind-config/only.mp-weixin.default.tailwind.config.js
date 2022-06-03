@@ -1,15 +1,19 @@
-const plugin = require('tailwindcss/plugin')
+const plugin = require('tailwindcss/plugin');
 
-const isH5 = process.env.UNI_PLATFORM === 'h5'
+const isH5 = process.env.UNI_PLATFORM === 'h5';
 
 module.exports = {
   darkMode: 'class',
-  purge: {
-    content: ['./src/**/*.vue', './src/**/*.wxml'],
-  },
+  content: [
+    './src/**/*.vue',
+    './src/**/*.{vue,js}',
+    './src/pages/**/*.{vue,js}',
+    './index.html',
+  ],
   corePlugins: [
-    isH5 ? 'preflight' : 'container',
+    'container',
     'alignContent',
+    'boxShadow',
     'alignItems',
     'backgroundColor',
     'backgroundPosition',
@@ -56,7 +60,7 @@ module.exports = {
     'textDecoration',
     'textOverflow',
     'textTransform',
-    'transform',
+    // 'transform',
     'transformOrigin',
     'transitionDelay',
     'transitionDuration',
@@ -69,7 +73,7 @@ module.exports = {
     'whitespace',
     'width',
     'wordBreak',
-    'zIndex'
+    'zIndex',
   ],
   variants: {
     accessibility: [],
@@ -144,13 +148,10 @@ module.exports = {
     spacing: {
       px: '1px',
       0: '0px',
-      '0_5': '0.125rem',
       1: '0.25rem',
-      '1_5': '0.375rem',
       2: '0.5rem',
-      '2_5': '0.625rem',
       3: '0.75rem',
-      '3_5': '0.875rem',
+      '1_3': '33.3333%',
       4: '1rem',
       5: '1.25rem',
       6: '1.5rem',
@@ -212,8 +213,8 @@ module.exports = {
           boxShadow:
             '0 2upx 6upx 0 rgba(0, 0, 0, 0.1), 0 2upx 4upx 0 rgba(0, 0, 0, 0.06)',
         },
-      }
-      addComponents(testComponents)
-    })
+      };
+      addComponents(testComponents);
+    }),
   ],
-}
+};
