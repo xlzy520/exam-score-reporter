@@ -251,6 +251,10 @@ export default {
   },
   onShow() {
     this.getRecordList()
+    wx.showShareMenu({
+      withShareTicket:true,
+      menus:['shareAppMessage','shareTimeline']
+    })
   },
 
   onPullDownRefresh() {
