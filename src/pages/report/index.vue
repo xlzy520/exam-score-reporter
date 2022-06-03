@@ -104,11 +104,9 @@ export default {
 
   },
   onHide() {
-    this.reset()
   },
 
   onShow(e) {
-    console.log(e)
     const id = (e && e.id) || app.globalData.recordId || this.subjectId
     this.setGradeTerm()
     // uni.showLoading({ title: '获取数据中...' })
@@ -193,6 +191,7 @@ export default {
         ...this.reportData,
       }).then(res => {
         uni.showToast({ title: actionName + '成功' })
+        this.reset()
         this.reportData.subjectId = res._id
         uni.switchTab({
           url: '/pages/index/index',
@@ -239,7 +238,21 @@ export default {
         data,
       }) => {
         if (data && data.length) {
-          this.reportData.subjects = data[0].subjects
+          const oldSubjects = this.reportData.subjects
+          // 保留老的分数
+          if (oldSubjects.length) {
+            const subjectMapping = oldSubjects.reduce((pre, cur)=> {
+              pre[cur.name] = cur.value
+              return pre
+            }, {})
+            this.reportData.subjects = data[0].subjects.map(v=> {
+              return {
+                ...v,
+                value: subjectMapping[v.name]
+              }
+            })
+
+          }
         } else {
           this.$showToast('未查询到相关信息，使用默认课程信息')
           this.reportData.subjects = defaultSubjects
