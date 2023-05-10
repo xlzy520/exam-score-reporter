@@ -10,7 +10,9 @@
  
 
 ### 安装启动
-1. 在[这里](https://github.com/xlzy520/exam-score-reporter/blob/8b97105f92fa3ac5f6e7c2f50d31fddb2f127785/src/App.vue#L48)把云函数环境改成你这里
+1. 在[这里](https://github.com/xlzy520/exam-score-reporter/blob/8b97105f92fa3ac5f6e7c2f50d31fddb2f127785/src/App.vue#L48)把云函数环境改成你自己的
+<img width="1073" alt="image" src="https://github.com/xlzy520/exam-score-reporter/assets/28336270/df6727ea-69ec-480e-974a-4bad4d9a4450">
+
 2. 云函数文件存储在`static/cloudfunctions-tcb`中（**一定要记得关联云空间、上传云函数啊**），需要每个云函数都上传
 2. 云数据库表: `scores`，`gradeSubject`，`users`, `report`
 3. `yarn`或者`npm`安装依赖
